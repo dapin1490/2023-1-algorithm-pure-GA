@@ -3,109 +3,38 @@
 #include <ctime>
 using namespace std;
 
-string currentDateTime() {
-	time_t t = time(nullptr);
-	tm now;
-	errno_t is_error = localtime_s(&now, &t);
-
-	if (is_error == 0) {
-		char buffer[256];
-		strftime(buffer, sizeof(buffer), "%Y-%m-%d %X", &now);
-		return buffer;
-	}
-	else {
-		return "ÇöÀç ½Ã°£À» ¾òÀ» ¼ö ¾øÀ½";
-	}
-}
+string currentDateTime(); // í˜„ì¬ ì‹œê°„ í‘œê¸°
 
 enum class _error : int { shut_down, ValueErrorInt, ValueErrorChar, UnknownError };
 
-// C++ ¿¡·¯ ¸Ş½ÃÁö Âü°í : https://learn.microsoft.com/ko-kr/cpp/error-messages/compiler-errors-1/c-cpp-build-errors?view=msvc-170
-void error(_error code, string message = "") {
-	if (!message.empty())
-		cout << "error: " << message << "\n";
-
-	switch (code) {
-	case _error::shut_down:
-		cout << "ÇÁ·Î±×·¥ ºñÁ¤»ó Á¾·á\n";
-		break;
-	case _error::ValueErrorInt: // Àß¸øµÈ ÀÔ·Â - int
-		cout << "ValueErrorInt: int °ªÀÌ ÀÔ·ÂµÇ¾î¾ß ÇÕ´Ï´Ù.\n";
-		break;
-	case _error::ValueErrorChar: // Àß¸øµÈ ÀÔ·Â - char
-		cout << "ValueErrorChar: char °ªÀÌ ÀÔ·ÂµÇ¾î¾ß ÇÕ´Ï´Ù.\n";
-		break;
-	default:
-		cout << "UnknownError: ¾Ë ¼ö ¾ø´Â ¿À·ù\n";
-	}
-
-	exit(1); // ÇÁ·Î±×·¥ ºñÁ¤»ó Á¾·á
-}
+// C++ ì—ëŸ¬ ë©”ì‹œì§€ ì°¸ê³  : https://learn.microsoft.com/ko-kr/cpp/error-messages/compiler-errors-1/c-cpp-build-errors?view=msvc-170
+void error(_error code, string message = ""); // ì˜¤ë¥˜ ì½”ë“œì™€ ë©”ì‹œì§€ ì¶œë ¥ í›„ í”„ë¡œê·¸ë¨ ì¢…ë£Œ
 
 struct Edge {
-	int from; // ½ÃÀÛÁ¡
-	int to; // Á¾Á¡
-	int w; // °¡ÁßÄ¡
+	unsigned from; // ì‹œì‘ì 
+	unsigned to; // ì¢…ì 
+	int w; // ê°€ì¤‘ì¹˜
 };
 
 class Graph {
 private:
-	unsigned v; // Á¤Á¡ ¼ö
-	vector<Edge> edges; // ±×·¡ÇÁ°¡ °®´Â °£¼±µé
+	unsigned v; // ì •ì  ìˆ˜
+	vector<Edge> edges; // ê·¸ë˜í”„ê°€ ê°–ëŠ” ê°„ì„ ë“¤
 
 public:
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	Graph() { this->v = 0; }
 	Graph(unsigned v) { this->v = v; }
 
-	// ÇÔ¼ö Á¤ÀÇ¿¡ ¾²ÀÎ const : ÀÌ ÇÔ¼ö ¾È¿¡¼­ ¾²´Â °ªµéÀ» º¯°æÇÒ ¼ö ¾ø´Ù
-	unsigned size() const { return v; } // ±×·¡ÇÁ°¡ °®´Â Á¤Á¡ÀÇ ¼ö¸¦ ¹İÈ¯
-	auto& edges_from() const { return this->edges; } // ±×·¡ÇÁ°¡ °®´Â °£¼±µéÀ» ¹İÈ¯
-	// Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ ¹İÈ¯
-	auto edges_from(unsigned i) const { // ¿©±â¿¡ & ¾²¸é °á°ú°¡ Á¦´ë·Î ¹İÈ¯ÀÌ ¾È µÊ. ±Ùµ¥ ÀÌÀ¯´Â ¸ğ¸§..
-		vector<Edge> edge_from_i;
-		for (auto& e : edges) {
-			if (e.from == i)
-				edge_from_i.push_back(e);
-		}
-		/* // ÀÌÂÊ ÄÚµåµµ ¶È°°Àº ±â´ÉÀ» ÇÔ
-		for (int idx = 0; idx < this->edges.size(); idx++) {
-			if (this->edges[idx].from == i)
-				edge_from_i.push_back(edges[idx]);
-		}*/
-		return edge_from_i;
-	}
+	// í•¨ìˆ˜ ì •ì˜ì— ì“°ì¸ const : ì´ í•¨ìˆ˜ ì•ˆì—ì„œ ì“°ëŠ” ê°’ë“¤ì„ ë³€ê²½í•  ìˆ˜ ì—†ë‹¤
+	unsigned size() const { return v; } // ê·¸ë˜í”„ê°€ ê°–ëŠ” ì •ì ì˜ ìˆ˜ë¥¼ ë°˜í™˜
+	vector<Edge> edges_from() const { return edges; } // ê·¸ë˜í”„ê°€ ê°–ëŠ” ê°„ì„ ë“¤ì„ ë°˜í™˜
+	vector<Edge> edges_from(unsigned i) const; // íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
 
-	void add(Edge&& e) { // ¹æÇâ °£¼± Ãß°¡
-		if (e.from > 0 && e.from <= this->v && e.to > 0 && e.to <= this->v)
-			this->edges.push_back(e);
-		else
-			error(_error::shut_down, "Á¤Á¡ ¹üÀ§ ÃÊ°ú");
+	void add(Edge&& e); // ë°©í–¥ ê°„ì„  ì¶”ê°€
+	void add_undir(Edge&& e); // ë¬´ë°©í–¥ ê°„ì„  ì¶”ê°€
 
-		return;
-	}
-
-	void add_undir(Edge&& e) { // ¹«¹æÇâ °£¼± Ãß°¡
-		if (e.from > 0 && e.from <= this->v && e.to > 0 && e.to <= this->v) {
-			this->edges.push_back(e);
-			this->edges.push_back(Edge{e.to, e.from, e.w});
-		}
-		else
-			error(_error::shut_down, "Á¤Á¡ ¹üÀ§ ÃÊ°ú");
-
-		return;
-	}
-
-	void print() { // ±×·¡ÇÁ Ãâ·Â
-		for (int i = 1; i <= v; i++) {
-			cout << "# " << i << ": "; // Á¤Á¡ ¹øÈ£
-			vector<Edge> edge = this->Graph::edges_from(i); // Á¤Á¡¿¡ ¿¬°áµÈ °£¼± °¡Á®¿À±â
-			for (auto& e : edge)
-				cout << "(" << e.to << ", " << e.w << ")  "; // Á¤Á¡¿¡ ¿¬°áµÈ °£¼± Ãâ·Â
-			cout << "\n";
-		}
-		return;
-	}
+	void print(); // ê·¸ë˜í”„ ì¶œë ¥
 };
 
 class GA {
@@ -118,19 +47,20 @@ public:
 
 int main()
 {
-	// ºü¸¥ ÀÔÃâ·Â
+	// ë¹ ë¥¸ ì…ì¶œë ¥
 	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-	// ÄÚµå ½ÇÇà ½Ã°£ ÃøÁ¤ : https://scarlettb.tistory.com/5
+	// ì½”ë“œ ì‹¤í–‰ ì‹œê°„ ì¸¡ì • : https://scarlettb.tistory.com/5
 	clock_t clock_start, clock_finish;
 	double clock_duration;
 
-	cout << "main.cpp ½ÇÇà ½Ã°¢ : " << currentDateTime() << "\n\n";
+	cout << "main.cpp ì‹¤í–‰ ì‹œê° : " << currentDateTime() << "\n\n";
 
 	clock_start = clock();
 
-	int v, e; // Á¤Á¡ ¼ö v, °£¼± ¼ö e
-	int from, to, w; // Ãâ¹ßÁ¡, µµÂøÁ¡, °¡ÁßÄ¡
+	int v, e; // ì •ì  ìˆ˜ v, ê°„ì„  ìˆ˜ e
+	unsigned from, to; // ì¶œë°œì , ë„ì°©ì 
+	int w; // ê°€ì¤‘ì¹˜
 	Graph graph;
 
 	cin >> v >> e;
@@ -146,9 +76,90 @@ int main()
 
 	clock_finish = clock();
 
-	// clock_duration = (double)(clock_finish - clock_start) / CLOCKS_PER_SEC; // ÃÊ ´ÜÀ§·Î È¯»ê
+	// clock_duration = (double)(clock_finish - clock_start) / CLOCKS_PER_SEC; // ì´ˆ ë‹¨ìœ„ë¡œ í™˜ì‚°
 	clock_duration = (double)(clock_finish - clock_start);
-	cout << "\nÇÁ·Î±×·¥ ½ÇÇà ½Ã°£ : " << clock_duration << "ms\n";
+	cout << "\ní”„ë¡œê·¸ë¨ ì‹¤í–‰ ì‹œê°„ : " << clock_duration << "ms\n";
 	
 	return 0;
+}
+
+string currentDateTime() { // í˜„ì¬ ì‹œê°„ í‘œê¸°
+	time_t t = time(nullptr);
+	tm now;
+	errno_t is_error = localtime_s(&now, &t);
+
+	if (is_error == 0) {
+		char buffer[256];
+		strftime(buffer, sizeof(buffer), "%Y-%m-%d %X", &now);
+		return buffer;
+	}
+	else {
+		return "í˜„ì¬ ì‹œê°„ì„ ì–»ì„ ìˆ˜ ì—†ìŒ";
+	}
+}
+
+void error(_error code, string message) { // ì˜¤ë¥˜ ì½”ë“œì™€ ë©”ì‹œì§€ ì¶œë ¥ í›„ í”„ë¡œê·¸ë¨ ì¢…ë£Œ
+	if (!message.empty())
+		cout << "error: " << message << "\n";
+
+	switch (code) {
+	case _error::shut_down:
+		cout << "í”„ë¡œê·¸ë¨ ë¹„ì •ìƒ ì¢…ë£Œ\n";
+		break;
+	case _error::ValueErrorInt: // ì˜ëª»ëœ ì…ë ¥ - int
+		cout << "ValueErrorInt: int ê°’ì´ ì…ë ¥ë˜ì–´ì•¼ í•©ë‹ˆë‹¤.\n";
+		break;
+	case _error::ValueErrorChar: // ì˜ëª»ëœ ì…ë ¥ - char
+		cout << "ValueErrorChar: char ê°’ì´ ì…ë ¥ë˜ì–´ì•¼ í•©ë‹ˆë‹¤.\n";
+		break;
+	default:
+		cout << "UnknownError: ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜\n";
+	}
+
+	exit(1); // í”„ë¡œê·¸ë¨ ë¹„ì •ìƒ ì¢…ë£Œ
+}
+
+vector<Edge> Graph::edges_from(unsigned i) const { // íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
+	vector<Edge> edge_from_i;
+	for (auto& e : edges) {
+		if (e.from == i)
+			edge_from_i.push_back(e);
+	}
+	/* // ì´ìª½ ì½”ë“œë„ ë˜‘ê°™ì€ ê¸°ëŠ¥ì„ í•¨
+	for (int idx = 0; idx < this->edges.size(); idx++) {
+		if (this->edges[idx].from == i)
+			edge_from_i.push_back(edges[idx]);
+	}*/
+	return edge_from_i;
+}
+
+void Graph::add(Edge&& e) { // ë°©í–¥ ê°„ì„  ì¶”ê°€
+	if (e.from > 0 && e.from <= this->v && e.to > 0 && e.to <= this->v)
+		this->edges.push_back(e);
+	else
+		error(_error::shut_down, "ì •ì  ë²”ìœ„ ì´ˆê³¼");
+
+	return;
+}
+
+void Graph::add_undir(Edge&& e) { // ë¬´ë°©í–¥ ê°„ì„  ì¶”ê°€
+	if (e.from > 0 && e.from <= this->v && e.to > 0 && e.to <= this->v) {
+		this->edges.push_back(e);
+		this->edges.push_back(Edge{e.to, e.from, e.w});
+	}
+	else
+		error(_error::shut_down, "ì •ì  ë²”ìœ„ ì´ˆê³¼");
+
+	return;
+}
+
+void Graph::print() { // ê·¸ë˜í”„ ì¶œë ¥
+	for (int i = 1; i <= v; i++) {
+		cout << "# " << i << ": "; // ì •ì  ë²ˆí˜¸
+		vector<Edge> edge = this->edges_from(i); // ì •ì ì— ì—°ê²°ëœ ê°„ì„  ê°€ì ¸ì˜¤ê¸°
+		for (auto& e : edge)
+			cout << "(" << e.to << ", " << e.w << ")  "; // ì •ì ì— ì—°ê²°ëœ ê°„ì„  ì¶œë ¥
+		cout << "\n";
+	}
+	return;
 }
