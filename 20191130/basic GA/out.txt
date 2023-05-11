@@ -1,336 +1,888 @@
-main.cpp 실행 시각 : 2023-05-10 19:38:47
+main.cpp 실행 시각 : 2023-05-11 15:23:07
 
 
 
 GA::execute() 테스트
 generate
-current time len: 27.25
+current time len: 1.541
 generate childs
 replace
-current time len: 28.431
+current time len: 1.664
 generate childs
 replace
-current time len: 29.721
+current time len: 1.729
 generate childs
 replace
-current time len: 31.214
+current time len: 1.817
 generate childs
 replace
-current time len: 32.765
+current time len: 1.907
 generate childs
 replace
-current time len: 34.279
+current time len: 1.973
 generate childs
 replace
-current time len: 35.51
+current time len: 2.028
 generate childs
 replace
-current time len: 36.704
+current time len: 2.098
 generate childs
 replace
-current time len: 37.901
+current time len: 2.173
 generate childs
 replace
-current time len: 39.109
+current time len: 2.242
 generate childs
 replace
-current time len: 40.576
+current time len: 2.302
 generate childs
 replace
-current time len: 42.15
+current time len: 2.354
 generate childs
 replace
-current time len: 43.627
+current time len: 2.436
 generate childs
 replace
-current time len: 45
+current time len: 2.527
 generate childs
 replace
-current time len: 46.183
+current time len: 2.584
 generate childs
 replace
-current time len: 47.416
+current time len: 2.641
 generate childs
 replace
-current time len: 48.613
+current time len: 2.699
 generate childs
 replace
-current time len: 49.878
+current time len: 2.768
 generate childs
 replace
-current time len: 51.347
+current time len: 2.84
 generate childs
 replace
-current time len: 52.851
+current time len: 2.896
 generate childs
 replace
-current time len: 54.337
+current time len: 2.951
 generate childs
 replace
-current time len: 55.576
+current time len: 3.006
 generate childs
 replace
-current time len: 56.78
+current time len: 3.061
 generate childs
 replace
-current time len: 57.967
+current time len: 3.114
 generate childs
 replace
-current time len: 59.186
+current time len: 3.185
 generate childs
 replace
-current time len: 60.602
+current time len: 3.264
 generate childs
 replace
-current time len: 62.131
+current time len: 3.323
 generate childs
 replace
-current time len: 63.628
+current time len: 3.372
 generate childs
 replace
-current time len: 65.051
+current time len: 3.423
 generate childs
 replace
-current time len: 66.28
+current time len: 3.474
 generate childs
 replace
-current time len: 67.47
+current time len: 3.542
 generate childs
 replace
-current time len: 68.679
+current time len: 3.624
 generate childs
 replace
-current time len: 69.961
+current time len: 3.682
 generate childs
 replace
-current time len: 71.469
+current time len: 3.742
 generate childs
 replace
-current time len: 73.006
+current time len: 3.795
 generate childs
 replace
-current time len: 74.59
+current time len: 3.851
 generate childs
 replace
-current time len: 75.892
+current time len: 3.937
 generate childs
 replace
-current time len: 77.077
+current time len: 4.004
 generate childs
 replace
-current time len: 78.328
+current time len: 4.07
 generate childs
 replace
-current time len: 79.516
+current time len: 4.158
 generate childs
 replace
-current time len: 80.964
+current time len: 4.275
 generate childs
 replace
-current time len: 82.472
+current time len: 4.342
 generate childs
 replace
-current time len: 83.975
+current time len: 4.408
 generate childs
 replace
-current time len: 85.388
+current time len: 4.482
 generate childs
 replace
-current time len: 86.591
+current time len: 4.544
 generate childs
 replace
-current time len: 87.802
+current time len: 4.619
 generate childs
 replace
-current time len: 88.997
+current time len: 4.69
 generate childs
 replace
-current time len: 90.377
+current time len: 4.744
 generate childs
 replace
-current time len: 91.879
+current time len: 4.792
 generate childs
 replace
-current time len: 93.393
+current time len: 4.837
 generate childs
 replace
-current time len: 94.922
+current time len: 4.882
 generate childs
 replace
-current time len: 96.127
+current time len: 4.947
 generate childs
 replace
-current time len: 97.336
+current time len: 5.024
 generate childs
 replace
-current time len: 98.568
+current time len: 5.093
 generate childs
 replace
-current time len: 99.826
+current time len: 5.15
 generate childs
 replace
-current time len: 101.388
+current time len: 5.201
 generate childs
 replace
-current time len: 102.894
+current time len: 5.249
 generate childs
 replace
-current time len: 104.566
+current time len: 5.306
 generate childs
 replace
-current time len: 105.995
+current time len: 5.365
 generate childs
 replace
-current time len: 107.309
+current time len: 5.445
 generate childs
 replace
-current time len: 108.532
+current time len: 5.496
 generate childs
 replace
-current time len: 109.748
+current time len: 5.583
 generate childs
 replace
-current time len: 111.228
+current time len: 5.676
 generate childs
 replace
-current time len: 112.753
+current time len: 5.774
 generate childs
 replace
-current time len: 114.405
+current time len: 5.865
 generate childs
 replace
-current time len: 115.822
+current time len: 5.948
 generate childs
 replace
-current time len: 117.069
+current time len: 6.031
 generate childs
 replace
-current time len: 118.371
+current time len: 6.103
 generate childs
 replace
-current time len: 119.581
+current time len: 6.166
 generate childs
 replace
-current time len: 121.009
+current time len: 6.22
 generate childs
 replace
-current time len: 122.576
+current time len: 6.272
 generate childs
 replace
-current time len: 124.165
+current time len: 6.329
 generate childs
 replace
-current time len: 125.668
+current time len: 6.404
 generate childs
 replace
-current time len: 126.986
+current time len: 6.494
 generate childs
 replace
-current time len: 128.272
+current time len: 6.585
 generate childs
 replace
-current time len: 129.536
+current time len: 6.68
 generate childs
 replace
-current time len: 130.94
+current time len: 6.793
 generate childs
 replace
-current time len: 132.517
+current time len: 6.873
 generate childs
 replace
-current time len: 134.199
+current time len: 6.926
 generate childs
 replace
-current time len: 135.634
+current time len: 6.979
 generate childs
 replace
-current time len: 136.875
+current time len: 7.031
 generate childs
 replace
-current time len: 138.176
+current time len: 7.1
 generate childs
 replace
-current time len: 139.416
+current time len: 7.183
 generate childs
 replace
-current time len: 140.71
+current time len: 7.268
 generate childs
 replace
-current time len: 142.24
+current time len: 7.337
 generate childs
 replace
-current time len: 143.74
+current time len: 7.405
 generate childs
 replace
-current time len: 145.281
+current time len: 7.483
 generate childs
 replace
-current time len: 146.559
+current time len: 7.536
 generate childs
 replace
-current time len: 147.79
+current time len: 7.595
 generate childs
 replace
-current time len: 149.035
+current time len: 7.648
 generate childs
 replace
-current time len: 150.26
+current time len: 7.705
 generate childs
 replace
-current time len: 151.734
+current time len: 7.759
 generate childs
 replace
-current time len: 153.27
+current time len: 7.819
 generate childs
 replace
-current time len: 154.793
+current time len: 7.875
 generate childs
 replace
-current time len: 156.169
+current time len: 7.932
 generate childs
 replace
-current time len: 157.385
+current time len: 7.986
 generate childs
 replace
-current time len: 158.574
+current time len: 8.04
 generate childs
 replace
-current time len: 159.804
+current time len: 8.095
 generate childs
 replace
-current time len: 161.233
+current time len: 8.177
 generate childs
 replace
-current time len: 162.815
+current time len: 8.281
 generate childs
 replace
-current time len: 164.315
+current time len: 8.344
 generate childs
 replace
-current time len: 165.797
+current time len: 8.409
 generate childs
 replace
-current time len: 167.078
+current time len: 8.47
 generate childs
 replace
-current time len: 168.29
+current time len: 8.524
 generate childs
 replace
-current time len: 169.517
+current time len: 8.58
 generate childs
 replace
-current time len: 170.787
+current time len: 8.644
 generate childs
 replace
-current time len: 172.279
+current time len: 8.705
 generate childs
 replace
-current time len: 173.798
+current time len: 8.758
 generate childs
 replace
-current time len: 175.38
-time over
+current time len: 8.815
+generate childs
+replace
+current time len: 8.87
+generate childs
+replace
+current time len: 8.939
+generate childs
+replace
+current time len: 9.023
+generate childs
+replace
+current time len: 9.077
+generate childs
+replace
+current time len: 9.13
+generate childs
+replace
+current time len: 9.184
+generate childs
+replace
+current time len: 9.238
+generate childs
+replace
+current time len: 9.294
+generate childs
+replace
+current time len: 9.352
+generate childs
+replace
+current time len: 9.41
+generate childs
+replace
+current time len: 9.47
+generate childs
+replace
+current time len: 9.526
+generate childs
+replace
+current time len: 9.584
+generate childs
+replace
+current time len: 9.64
+generate childs
+replace
+current time len: 9.698
+generate childs
+replace
+current time len: 9.752
+generate childs
+replace
+current time len: 9.805
+generate childs
+replace
+current time len: 9.86
+generate childs
+replace
+current time len: 9.933
+generate childs
+replace
+current time len: 9.991
+generate childs
+replace
+current time len: 10.043
+generate childs
+replace
+current time len: 10.098
+generate childs
+replace
+current time len: 10.15
+generate childs
+replace
+current time len: 10.202
+generate childs
+replace
+current time len: 10.255
+generate childs
+replace
+current time len: 10.314
+generate childs
+replace
+current time len: 10.37
+generate childs
+replace
+current time len: 10.427
+generate childs
+replace
+current time len: 10.483
+generate childs
+replace
+current time len: 10.544
+generate childs
+replace
+current time len: 10.6
+generate childs
+replace
+current time len: 10.661
+generate childs
+replace
+current time len: 10.72
+generate childs
+replace
+current time len: 10.776
+generate childs
+replace
+current time len: 10.828
+generate childs
+replace
+current time len: 10.875
+generate childs
+replace
+current time len: 10.921
+generate childs
+replace
+current time len: 10.967
+generate childs
+replace
+current time len: 11.016
+generate childs
+replace
+current time len: 11.07
+generate childs
+replace
+current time len: 11.118
+generate childs
+replace
+current time len: 11.168
+generate childs
+replace
+current time len: 11.217
+generate childs
+replace
+current time len: 11.266
+generate childs
+replace
+current time len: 11.316
+generate childs
+replace
+current time len: 11.373
+generate childs
+replace
+current time len: 11.456
+generate childs
+replace
+current time len: 11.511
+generate childs
+replace
+current time len: 11.583
+generate childs
+replace
+current time len: 11.662
+generate childs
+replace
+current time len: 11.711
+generate childs
+replace
+current time len: 11.765
+generate childs
+replace
+current time len: 11.813
+generate childs
+replace
+current time len: 11.856
+generate childs
+replace
+current time len: 11.906
+generate childs
+replace
+current time len: 11.963
+generate childs
+replace
+current time len: 12.016
+generate childs
+replace
+current time len: 12.061
+generate childs
+replace
+current time len: 12.106
+generate childs
+replace
+current time len: 12.148
+generate childs
+replace
+current time len: 12.19
+generate childs
+replace
+current time len: 12.232
+generate childs
+replace
+current time len: 12.274
+generate childs
+replace
+current time len: 12.319
+generate childs
+replace
+current time len: 12.362
+generate childs
+replace
+current time len: 12.406
+generate childs
+replace
+current time len: 12.457
+generate childs
+replace
+current time len: 12.556
+generate childs
+replace
+current time len: 12.67
+generate childs
+replace
+current time len: 12.719
+generate childs
+replace
+current time len: 12.762
+generate childs
+replace
+current time len: 12.802
+generate childs
+replace
+current time len: 12.856
+generate childs
+replace
+current time len: 12.932
+generate childs
+replace
+current time len: 13.007
+generate childs
+replace
+current time len: 13.048
+generate childs
+replace
+current time len: 13.088
+generate childs
+replace
+current time len: 13.132
+generate childs
+replace
+current time len: 13.176
+generate childs
+replace
+current time len: 13.217
+generate childs
+replace
+current time len: 13.257
+generate childs
+replace
+current time len: 13.296
+generate childs
+replace
+current time len: 13.34
+generate childs
+replace
+current time len: 13.38
+generate childs
+replace
+current time len: 13.419
+generate childs
+replace
+current time len: 13.459
+generate childs
+replace
+current time len: 13.499
+generate childs
+replace
+current time len: 13.538
+generate childs
+replace
+current time len: 13.579
+generate childs
+replace
+current time len: 13.636
+generate childs
+replace
+current time len: 13.69
+generate childs
+replace
+current time len: 13.732
+generate childs
+replace
+current time len: 13.776
+generate childs
+replace
+current time len: 13.82
+generate childs
+replace
+current time len: 13.865
+generate childs
+replace
+current time len: 13.908
+generate childs
+replace
+current time len: 13.969
+generate childs
+replace
+current time len: 14.029
+generate childs
+replace
+current time len: 14.076
+generate childs
+replace
+current time len: 14.14
+generate childs
+replace
+current time len: 14.225
+generate childs
+replace
+current time len: 14.273
+generate childs
+replace
+current time len: 14.313
+generate childs
+replace
+current time len: 14.355
+generate childs
+replace
+current time len: 14.396
+generate childs
+replace
+current time len: 14.435
+generate childs
+replace
+current time len: 14.476
+generate childs
+replace
+current time len: 14.523
+generate childs
+replace
+current time len: 14.604
+generate childs
+replace
+current time len: 14.683
+generate childs
+replace
+current time len: 14.738
+generate childs
+replace
+current time len: 14.821
+generate childs
+replace
+current time len: 14.908
+generate childs
+replace
+current time len: 14.98
+generate childs
+replace
+current time len: 15.057
+generate childs
+replace
+current time len: 15.103
+generate childs
+replace
+current time len: 15.146
+generate childs
+replace
+current time len: 15.187
+generate childs
+replace
+current time len: 15.23
+generate childs
+replace
+current time len: 15.292
+generate childs
+replace
+current time len: 15.379
+generate childs
+replace
+current time len: 15.431
+generate childs
+replace
+current time len: 15.471
+generate childs
+replace
+current time len: 15.515
+generate childs
+replace
+current time len: 15.589
+generate childs
+replace
+current time len: 15.638
+generate childs
+replace
+current time len: 15.687
+generate childs
+replace
+current time len: 15.751
+generate childs
+replace
+current time len: 15.836
+generate childs
+replace
+current time len: 15.896
+generate childs
+replace
+current time len: 15.947
+generate childs
+replace
+current time len: 16.017
+generate childs
+replace
+current time len: 16.065
+generate childs
+replace
+current time len: 16.105
+generate childs
+replace
+current time len: 16.145
+generate childs
+replace
+current time len: 16.184
+generate childs
+replace
+current time len: 16.225
+generate childs
+replace
+current time len: 16.287
+generate childs
+replace
+current time len: 16.346
+generate childs
+replace
+current time len: 16.389
+generate childs
+replace
+current time len: 16.431
+generate childs
+replace
+current time len: 16.472
+generate childs
+replace
+current time len: 16.513
+generate childs
+replace
+current time len: 16.553
+generate childs
+replace
+current time len: 16.593
+generate childs
+replace
+current time len: 16.634
+generate childs
+replace
+current time len: 16.68
+generate childs
+replace
+current time len: 16.726
+generate childs
+replace
+current time len: 16.767
+generate childs
+replace
+current time len: 16.809
+generate childs
+replace
+current time len: 16.849
+generate childs
+replace
+current time len: 16.891
+generate childs
+replace
+current time len: 16.933
+generate childs
+replace
+current time len: 16.973
+generate childs
+replace
+current time len: 17.014
+generate childs
+replace
+current time len: 17.055
+generate childs
+replace
+current time len: 17.095
+generate childs
+replace
+current time len: 17.136
+generate childs
+replace
+current time len: 17.176
+generate childs
+replace
+current time len: 17.216
+generate childs
+replace
+current time len: 17.256
+generate childs
+replace
+current time len: 17.296
+generate childs
+replace
+current time len: 17.336
+generate childs
+replace
+current time len: 17.375
+generate childs
+replace
+current time len: 17.419
+generate childs
+replace
+current time len: 17.46
+generate childs
+replace
+current time len: 17.5
+generate childs
+replace
+current time len: 17.539
+generate childs
+replace
+current time len: 17.578
+generate childs
+replace
+current time len: 17.619
+generate childs
+replace
+current time len: 17.659
+generate childs
+replace
+current time len: 17.701
+generate childs
+replace
+current time len: 17.743
+generate childs
+replace
+current time len: 17.786
+generate childs
+replace
+current time len: 17.826
+generate childs
+replace
+current time len: 17.868
+generate childs
+replace
+current time len: 17.912
+generate childs
+replace
+current time len: 17.954
+generate childs
+replace
+current time len: 17.996
+generate childs
+replace
+current time len: 18.04
+generate childs
+replace
+current time len: 18.086
+generate childs
+replace
+current time len: 18.132
+generate childs
+replace
+current time len: 18.179
+generate childs
+replace
+evolution complete
+return solution
 
-solution: ABBABAAAABBABBABBABBABBABAABBBAABABAAAABAAABAABBBBAABBBAAAABAAAAAABBABABBBBAABAABABABBBABABABABABBABBAABBAAABAAABABBBBABABAABBBABABBAABABBBBABBABBABBABABBBABBAAABBABBBAAAAABBBABBBBAAAABBAAABAAABBBBBBAABABABAABBAAABBBAAAABBAAABAABBBBBABAAAAAABAAABBBABAAABABBABBAAABBAABAABAABBBBBAAABBAAAABAABABBBBBAAABBABABBBAABBAABBBABAAAABAAABABBBBAABBBAAABBBABBABBABABABBAABBBABAABBBBAABAAABAABBBAABBAABAAAAAAABBBAAABBAAAABABAABABBBABBAABABAAABAAABBABBABBBABBABBBBAABBBAABABBBBABABBABBABAABBAAAABBABBBBABABABABBBAB(3452)
+solution: BBAAABAABAAABAABBBBBAABBBBAAAAAAAABBABABBBBABABABA(95)
 
-프로그램 실행 시간 : 175380ms
+프로그램 실행 시간 : 18230ms

@@ -5,6 +5,7 @@
 #include <random> // 균등 난수 참고: https://modoocode.com/304
 #include <tuple> // 튜플: https://jjeongil.tistory.com/148
 #include <map>
+#include <set>
 using namespace std;
 
 /*
@@ -256,8 +257,9 @@ int GA::validate(string chromosome) {
 	* 두 부류는 최소한 1개 이상의 노드를 가져야 한다. 어느 한 부류에 모든 노드가 포함될 수 없다.
 	* 두 부류는 최소 1개 이상의 간선으로 서로 연결되어야 한다: 한쪽 부류에 있는 노드가 갖는 모든 간선 중 반대쪽 부류로 이어지는 게 하나라도 있으면 통과
 	*/
-	vector<int> a, b;
-	int cost = 0;
+	set<int> a, b; // 두 부류의 노드 모음
+	set<int>& key_pool = a; // 가중치 계산할 때 키가 되는 노드
+	int cost = 0; // 계산된 가중치
 	bool flag = false; // 두 부류가 최소 하나 이상의 간선으로 연결되었는지
 	bool is_ok = false; // 두 부류 사이의 간선이 맞는지
 
@@ -269,10 +271,10 @@ int GA::validate(string chromosome) {
 	for (int i = 0; i < chromosome.length(); i++) {
 		switch (chromosome.at(i)) {
 		case 'A':
-			a.push_back(i + 1);
+			a.insert(i + 1);
 			break;
 		case 'B':
-			b.push_back(i + 1);
+			b.insert(i + 1);
 			break;
 		default: return INT_MIN; // 여기로 넘어온다면 해가 완전히 잘못 생성된 것
 		}
@@ -283,31 +285,18 @@ int GA::validate(string chromosome) {
 		return INT_MIN;
 
 	// 두 부류는 최소 1개 이상의 간선으로 서로 연결되어야 한다: 수가 더 적은 쪽의 노드를 전수조사하여 cost도 동시에 계산
-	if (a.size() <= b.size()) {
-		for (int& node : a) {
-			vector<Edge> edges = graph.edges_from(node);
-			for (Edge e : edges) {
-				is_ok = find(a.begin(), a.end(), e.to) == a.end();
-				if (flag && is_ok)
-					cost += e.w;
-				else if (!flag && is_ok) {
-					flag = true;
-					cost += e.w;
-				}
-			}
-		}
+	if (a.size() > b.size()) {
+		key_pool = b;
 	}
-	else {
-		for (int& node : b) {
-			vector<Edge> edges = graph.edges_from(node);
-			for (Edge e : edges) {
-				is_ok = find(b.begin(), b.end(), e.to) == b.end();
-				if (flag && is_ok)
-					cost += e.w;
-				else if (!flag && is_ok) {
-					flag = true;
-					cost += e.w;
-				}
+	for (const int& node : key_pool) {
+		vector<Edge> edges = graph.edges_from(node);
+		for (Edge e : edges) {
+			is_ok = find(key_pool.begin(), key_pool.end(), e.to) == key_pool.end();
+			if (flag && is_ok)
+				cost += e.w;
+			else if (!flag && is_ok) {
+				flag = true;
+				cost += e.w;
 			}
 		}
 	}
