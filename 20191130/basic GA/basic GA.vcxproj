@@ -128,15 +128,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="20191130 basic GA.cpp" />
+    <Text Include="res\in.txt" />
+    <Text Include="res\mini-ex-graph.txt" />
+    <Text Include="res\out.txt" />
+    <Text Include="res\unweighted_100.txt" />
+    <Text Include="res\unweighted_50.txt" />
+    <Text Include="res\weighted_500.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="in.txt" />
-    <Text Include="mini-ex-graph.txt" />
-    <Text Include="out.txt" />
-    <Text Include="unweighted_100.txt" />
-    <Text Include="unweighted_50.txt" />
-    <Text Include="weighted_500.txt" />
+    <None Include="res\un50test.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="20191130 basic GA.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,28 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="res\in.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="res\mini-ex-graph.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="res\out.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="res\unweighted_50.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="res\unweighted_100.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="res\weighted_500.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\un50test.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="20191130 basic GA.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="unweighted_50.txt">
-      <Filter>리소스 파일</Filter>
-    </Text>
-    <Text Include="unweighted_100.txt">
-      <Filter>리소스 파일</Filter>
-    </Text>
-    <Text Include="weighted_500.txt">
-      <Filter>리소스 파일</Filter>
-    </Text>
-    <Text Include="out.txt">
-      <Filter>리소스 파일</Filter>
-    </Text>
-    <Text Include="in.txt">
-      <Filter>리소스 파일</Filter>
-    </Text>
-    <Text Include="mini-ex-graph.txt">
-      <Filter>리소스 파일</Filter>
-    </Text>
   </ItemGroup>
 </Project>

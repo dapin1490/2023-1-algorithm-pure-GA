@@ -9,11 +9,6 @@
 #include <string>
 using namespace std;
 
-/*
-* 참고 자료
-* 룰렛 휠 알고리즘 구현: https://blog.devkcr.org/entry/%EC%9C%A0%EC%A0%84-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EA%B0%80%EC%A7%80%EA%B3%A0-%EB%86%80%EA%B8%B0 , http://www.aistudy.com/biology/genetic/operator_moon.htm
-*/
-
 // 현재 시간 표기
 string currentDateTime();
 
@@ -64,11 +59,11 @@ class GA {
 	*/
 private:
 	mt19937 gen; // 난수 생성기
-	clock_t start_timestamp;
+	clock_t start_timestamp; // 프로그램 시작 시간
 	Graph graph; // 문제 그래프
 	/* 유전자 풀: 가중치에 따른 선택을 위해 카운팅 배열 방식으로 저장 */
-	map<int, vector<vector<string>>> pool; // female[0], male[1]
-	vector<tuple<int, int, string>> temp_pool; // 임시 자식 풀: 성별 번호[0, 1], cost, 유전자
+	map<int, vector<string>> pool; // 가중치, 해
+	vector<tuple<int, string>> temp_pool; // 임시 자식 풀: cost, 유전자
 	int thresh; // 부모 쌍 cost 차이 제한
 	tuple<int, string> sol; // 반환할 해
 
@@ -79,7 +74,7 @@ private:
 	bool is_timeout(int deadline, bool is_print = false);
 	// 현재 pool에서 가장 좋은 해 반환
 	tuple<int, string> get_current_best() {
-		this->sol = make_tuple((--pool.end())->first, ((--pool.end())->second[0].size() != 0 ? (--pool.end())->second[0].front() : (--pool.end())->second[1].front()));
+		this->sol = make_tuple((--pool.end())->first, (--pool.end())->second[0]);
 		return sol;
 	}
 	// 해 유효성 확인 및 cost 계산
@@ -93,7 +88,7 @@ private:
 	// 돌연변이
 	string mutation(string chromosome);
 	// 세대 교체
-	bool replacement(string chromosome, int cost, int gender);
+	bool replacement(string chromosome, int cost);
 
 public:
 	GA() {
@@ -172,8 +167,8 @@ int main()
 	GA agent = GA(graph, clock_start);
 
 	// 유전 알고리즘 실행 후 결과 출력
-	cout << "\n\nGA::execute() 테스트\n";
-	tuple<int, string> sol = agent.execute();
+	// cout << "\n\nGA::execute() 테스트\n";
+	tuple<int, string> sol = agent.execute(10);
 	sol = agent.get_solution();
 	cout << "\nsolution: " << get<1>(sol) << "(" << get<0>(sol) << ")\n";
 	cout << "\nanswer: " << agent.to_string_solution() << "\n";
@@ -367,30 +362,23 @@ string GA::generate() {
 tuple<string, int, string, int> GA::selection() {
 	/*
 	* 부모 선택 과정
-	* female pool에서 랜덤한 수(2의 거듭제곱)의 cost 뽑기: 뽑힌 cost에 해당하는 해가 최소 1개 존재해야 함
-	* 뽑힌 cost끼리 토너먼트
-	* 최종 승자 cost에 해당하는 해 랜덤으로 뽑기 -> female parent
-
-	* 예외 교배 판정 실행: 낮은 확률로 cost 차이가 큰 부모가 생성될 수 있음
-	* 예외 교배 판정에 따라 정해진 cost 범위 내에서 male의 cost 뽑기: 뽑힌 cost에 해당하는 해가 최소 1개 존재해야 함
-		* 예외: 아무리 뽑아도 해당하는 해가 없다면 female을 male parent로 사용해 자가복제
-	* 뽑힌 cost에 해당하는 해 랜덤으로 뽑기 -> male parent
+	* 아래 과정을 2번 반복
+		* 전체 pool에서 랜덤한 수(2의 거듭제곱)의 cost 뽑기: 뽑힌 cost에 해당하는 해가 최소 1개 존재해야 함
+		* 뽑힌 cost끼리 토너먼트
+		* 최종 승자 cost에 해당하는 해 랜덤으로 뽑기 -> parent
 	*/
 	tuple<string, int, string, int> parents; // 선택된 부모: female 먼저 선택 후 male 선택
 	int n_candis = pow(2, uniform_int_distribution<int>(3, 5)(this->gen)); // 뽑을 후보의 수
 	uniform_int_distribution<int> pick_cost(pool.begin()->first, (--pool.end())->first); // cost 뽑기
 	uniform_int_distribution<int> pick_chromo(1, 10); // 둘 중 이긴 유전자 뽑기
-	uniform_int_distribution<int> special_love(5, 1000); // cost 차이가 큰 쌍이 생성될 확률 0.5%
 	int ca, cb, len;
-	vector<int> candidates; // 토너먼트에 참가할 female cost 후보
-	int break_count = 0;
-	bool break_flag = false; // 만약 female의 선택 범위에 male이 존재하지 않는다면 자가복제
+	vector<int> candidates; // 토너먼트에 참가할 cost 후보
 
 	// female 후보 뽑기: 2^3 ~ 2^5개 사이, 중복은 고려하지 않음
 	for (int i = 0; i < n_candis; i++) {
 		while (true) { // 유효한 후보가 나올 때까지 뽑기
 			ca = pick_cost(this->gen); // cost 선택: 존재하는 모든 cost 중 뽑기 때문에 무조건 하나는 있음
-			if (pool.find(ca) != pool.end() && pool[ca][0].size() != 0) // 선택한 cost를 갖는 해가 있는지 확인
+			if (pool.find(ca) != pool.end() && pool[ca].size() != 0) // 선택한 cost를 갖는 해가 있는지 확인
 				break;
 		}
 		candidates.push_back(ca); // 후보 추가
@@ -406,34 +394,35 @@ tuple<string, int, string, int> GA::selection() {
 	}
 
 	// 최종 승자 cost를 갖는 해 중에서 랜덤하게 female 선택
-	len = pool[candidates[0]][0].size(); // 후보 수: 최소 하나 이상 있는 것만 후보로 넣었기 때문에 무조건 있음
-	get<0>(parents) = pool[candidates[0]][0][uniform_int_distribution<int>(0, len - 1)(this->gen)]; // 뽑기
+	len = pool[candidates[0]].size(); // 후보 수: 최소 하나 이상 있는 것만 후보로 넣었기 때문에 무조건 있음
+	get<0>(parents) = pool[candidates[0]][uniform_int_distribution<int>(0, len - 1)(this->gen)]; // 뽑기
 	get<1>(parents) = candidates[0]; // 뽑힌 female의 가중치
 
-	if (special_love(this->gen) > 5) { // 예외 교배 발생 판정: 발생하지 않으면 female의 cost보다 나은 male만을 선택하게 함
-		pick_cost = uniform_int_distribution<int>(candidates[0], candidates[0] + thresh);
+	candidates.clear();
+
+	// male 후보 뽑기: 2^3 ~ 2^5개 사이, 중복은 고려하지 않음
+	for (int i = 0; i < n_candis; i++) {
+		while (true) { // 유효한 후보가 나올 때까지 뽑기
+			cb = pick_cost(this->gen); // cost 선택: 존재하는 모든 cost 중 뽑기 때문에 무조건 하나는 있음
+			if (pool.find(cb) != pool.end() && pool[cb].size() != 0) // 선택한 cost를 갖는 해가 있는지 확인
+				break;
+		}
+		candidates.push_back(cb); // 후보 추가
 	}
 
-	// male 선택
-	while (true) { // 뽑히거나, 포기할 때까지 반복
-		cb = pick_cost(this->gen); // male의 cost 뽑기
-		if (pool.find(cb) != pool.end() && pool[cb][1].size() != 0) // 해 존재 확인
-			break;
-		if (break_count > thresh * 2) { // 아무리 뽑아도 해가 없으면
-			break_flag = true; // 자가 복제 flag true
-			break;
+	// 뽑힌 cost로 토너먼트: 승자를 왼쪽에 저장, 최종 승자는 0번에 저장됨
+	for (int i = 1; i < n_candis; i *= 2) {
+		for (int j = 0; j < n_candis; j += 2 * i) {
+			ca = (candidates[j] > candidates[j + i] ? candidates[j] : candidates[j + i]);
+			cb = candidates[j] + candidates[j + i] - ca;
+			candidates[j] = (pick_chromo(this->gen) >= 6 ? ca : cb);
 		}
-		break_count++;
 	}
-	if (!break_flag) { // 뽑을 male이 있음
-		len = pool[cb][1].size();
-		get<2>(parents) = pool[cb][1][uniform_int_distribution<int>(0, len - 1)(this->gen)];
-		get<3>(parents) = cb;
-	}
-	else { // male이 없어서 자가 복제
-		get<2>(parents) = get<0>(parents);
-		get<3>(parents) = get<1>(parents);
-	}
+
+	// 최종 승자 cost를 갖는 해 중에서 랜덤하게 male 선택
+	len = pool[candidates[0]].size(); // 후보 수: 최소 하나 이상 있는 것만 후보로 넣었기 때문에 무조건 있음
+	get<2>(parents) = pool[candidates[0]][uniform_int_distribution<int>(0, len - 1)(this->gen)]; // 뽑기
+	get<3>(parents) = candidates[0]; // 뽑힌 male의 가중치
 
 	return parents;
 }
@@ -471,7 +460,7 @@ string GA::mutation(string chromosome) {
 }
 
 // 세대 교체
-bool GA::replacement(string chromosome, int cost, int gender) {
+bool GA::replacement(string chromosome, int cost) {
 	uniform_int_distribution<int> gen_cost(0, thresh + 3); // 자식과 교체 대상의 cost 차이 생성
 	int r_cost; // 교체 대상의 cost
 	int break_count = 0;
@@ -479,22 +468,22 @@ bool GA::replacement(string chromosome, int cost, int gender) {
 
 	while (true) { // 교체 대상의 cost 뽑기: 유효한 cost가 나오거나 포기할 때까지 반복
 		r_cost = max(cost - gen_cost(this->gen), 0);
-		if ((pool.find(r_cost) != pool.end() && pool[r_cost][gender].size() != 0) || break_count > 20)
+		if ((pool.find(r_cost) != pool.end() && pool[r_cost].size() != 0) || break_count > 20)
 			break;
 		break_count++;
 	}
 	if (break_count > 20) // 20번을 뽑아도 대체할 cost가 없으면 대체하지 않고 패스
 		return false;
 
-	s = pool[r_cost][gender].size();
+	s = pool[r_cost].size();
 
 	s = uniform_int_distribution<int>(0, s - 1)(this->gen); // 교체 대상의 인덱스 뽑기
-	pool[r_cost][gender].erase(pool[r_cost][gender].begin() + s); // 교체 대상 삭제
+	pool[r_cost].erase(pool[r_cost].begin() + s); // 교체 대상 삭제
 
 	if (pool.find(cost) == pool.end()) { // 추가할 자식의 cost가 pool에 없으면 추가
-		pool.insert({ cost, vector<vector<string>>(2) });
+		pool.insert({ cost, vector<string>() });
 	}
-	pool[cost][gender].push_back(chromosome); // 자식 추가
+	pool[cost].push_back(chromosome); // 자식 추가
 	return true; // 교체 성공
 }
 
@@ -511,27 +500,23 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 	string res = ""; // 마지막에 반환할 결과
 	int n_pool = min(1000, int(50 * this->graph.size())); // 초기 생성 pool 크기
 	int k = int(double(n_pool) * 0.1); // 한 세대 수
-	uniform_int_distribution<int> gender(0, 1); // 성별 랜덤 지정
 	uniform_int_distribution<int> plz_add_me(1, 100); // 대체 대상이 없는 자식이 pool에 추가될 확률 2%
 	bool is_child_added = false; // 자식이 pool에 추가되었는지
 	int cut_count = 0; // 대체 실패한 자식 수
 
 	// 랜덤 해 생성
 	// cout << "generate\n";
-	/*map<int, vector<vector<string>>> pool; // female[0], male[1]*/
-	for (int i = 0; i < n_pool; i++) { // 두 성별 포함해 2 * n_pool 만큼 생성
-		for (int j = 0; j < 2; j++) { // 두 성별의 수는 서로 같게 함
-			string chromosome = generate();
-			int cost = validate(chromosome);
-			if (cost != INT_MIN) { // 유효한 해만 pool에 추가
-				if (pool.find(cost) == pool.end()) {
-					pool.insert({ cost, vector<vector<string>>(2) });
-				}
-				pool[cost][j].push_back(chromosome);
+	for (int i = 0; i < 2 * n_pool; i++) { // 2 * n_pool 만큼 생성
+		string chromosome = generate();
+		int cost = validate(chromosome);
+		if (cost != INT_MIN) { // 유효한 해만 pool에 추가
+			if (pool.find(cost) == pool.end()) {
+				pool.insert({ cost, vector<string>() });
 			}
-			else
-				j--;
+			pool[cost].push_back(chromosome);
 		}
+		else
+			i--;
 		if (is_timeout(due, false)) {
 			return get_current_best();
 		}
@@ -542,7 +527,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		return get_current_best();
 	}
 
-	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.1), 2)); // 부모 쌍 cost 차이 제한
+	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.1), 2)); // 자식 교체 대상 cost 차이 제한
 
 	// 부모 선택, 교배, 세대 교체
 	while (true) { // 조건을 만족할 때까지 진화, 제한 시간 임박하면 종료
@@ -566,15 +551,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 			string child = crossover(get<0>(parent), get<2>(parent));
 			int child_cost = validate(child);
 			if (child_cost != INT_MIN) {
-				temp_pool.push_back(make_tuple(gender(this->gen), child_cost, child));
-			}
-			// thresh 예외 추가 자식
-			if (abs(get<1>(parent) - get<3>(parent)) > thresh) {
-				child = crossover(get<0>(parent), get<2>(parent));
-				child_cost = validate(child);
-				if (child_cost != INT_MIN) {
-					temp_pool.push_back(make_tuple(gender(this->gen), child_cost, child));
-				}
+				temp_pool.push_back(make_tuple(child_cost, child));
 			}
 		}
 		// 시간 제한 확인
@@ -586,12 +563,12 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		// 세대 교체
 		// cout << "replace\n";
 		for (auto& child : temp_pool) {
-			is_child_added = replacement(get<2>(child), get<1>(child), get<0>(child));
+			is_child_added = replacement(get<1>(child), get<0>(child));
 			if (!is_child_added && plz_add_me(this->gen) <= 2) {
-				if (pool.find(get<1>(child)) == pool.end()) {
-					pool.insert({ get<1>(child), vector<vector<string>>(2) });
+				if (pool.find(get<0>(child)) == pool.end()) {
+					pool.insert({ get<0>(child), vector<string>() });
 				}
-				pool[get<1>(child)][get<0>(child)].push_back(get<2>(child));
+				pool[get<0>(child)].push_back(get<1>(child));
 				is_child_added = true;
 			}
 			else if (!is_child_added)
