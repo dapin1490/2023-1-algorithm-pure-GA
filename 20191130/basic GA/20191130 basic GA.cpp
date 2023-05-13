@@ -7,17 +7,11 @@
 #include <map>
 #include <set>
 #include <string>
+#include <fstream>
 using namespace std;
 
 // 현재 시간 표기
 string currentDateTime();
-
-// 오류 코드
-enum class _error : int { shut_down, ValueErrorInt, ValueErrorChar, UnknownError };
-
-// C++ 에러 메시지 참고 : https://learn.microsoft.com/ko-kr/cpp/error-messages/compiler-errors-1/c-cpp-build-errors?view=msvc-170
-// 오류 코드와 메시지 출력 후 프로그램 종료
-void error(_error code, string message = "");
 
 struct Edge {
 	unsigned from; // 시작점
@@ -98,26 +92,26 @@ public:
 		this->gen = g;
 		start_timestamp = clock();
 	}
-	GA(Graph graph) {
+	GA(Graph& graph) {
 		this->graph = graph;
 		random_device rd;
 		mt19937 g(rd());
 		this->gen = g;
 		start_timestamp = clock();
 	}
-	GA(Graph graph, mt19937 gen) {
+	GA(Graph& graph, mt19937 gen) {
 		this->graph = graph;
 		this->gen = gen;
 		start_timestamp = clock();
 	}
-	GA(Graph graph, clock_t start) {
+	GA(Graph& graph, clock_t start) {
 		this->graph = graph;
 		random_device rd;
 		mt19937 g(rd());
 		this->gen = g;
 		start_timestamp = start;
 	}
-	GA(Graph graph, mt19937 gen, clock_t start) {
+	GA(Graph& graph, mt19937 gen, clock_t start) {
 		this->graph = graph;
 		this->gen = gen;
 		start_timestamp = start;
@@ -135,50 +129,127 @@ int main()
 {
 	// 빠른 입출력
 	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
-
+	
 	// 코드 실행 시간 측정 : https://scarlettb.tistory.com/5
-	clock_t clock_start, clock_finish;
-	double clock_duration;
+	//clock_t clock_start, clock_finish;
+	//double clock_duration;
 
 	cout << "main.cpp 실행 시각 : " << currentDateTime() << "\n\n";
 
-	clock_start = clock();
+	//clock_start = clock();
+
+	// 제출용 입출력
+	ifstream input{ "maxcut.in" };
+	ofstream output{ "maxcut.out" };
+
+	/*// 노드 50개 테스트
+	ifstream input50{ "res/unweighted_50.txt" };
+	ofstream output50{ "res/un50test.csv" };*/
+
+	/*// 노드 100개 테스트
+	ifstream input100{ "res/unweighted_100.txt" };
+	ofstream output100{ "res/un100test.csv" };*/
+
+	/*// 노드 500개 테스트
+	ifstream input500{ "res/weighted_500.txt" };
+	ofstream output500{ "res/w500test.csv" };*/
 
 	// 프로그램 실행 시작
 	int v, e; // 정점 수 v, 간선 수 e
 	unsigned from, to; // 출발점, 도착점
 	int w; // 가중치
 	Graph graph;
+	GA agent;
+	int due = 178, iter = 30; // 시간 제한, 반복 수
 
-	cin >> v >> e; // 그래프 정보 입력
+	// 제출용 실행 코드
+	input >> v >> e; // 그래프 정보 입력
 
 	graph = Graph(v); // 그래프 생성
 
 	// 그래프 노드 입력
 	for (int i = 0; i < e; i++) {
-		cin >> from >> to >> w;
+		input >> from >> to >> w;
 		graph.add_undir(Edge{ from, to, w });
 	}
 
-	// 그래프 출력
-	//graph.print();
-
-	// 유전 알고리즘 실행자 생성
-	GA agent = GA(graph, clock_start);
-
 	// 유전 알고리즘 실행 후 결과 출력
-	// cout << "\n\nGA::execute() 테스트\n";
-	tuple<int, string> sol = agent.execute(10);
-	sol = agent.get_solution();
-	cout << "\nsolution: " << get<1>(sol) << "(" << get<0>(sol) << ")\n";
-	cout << "\nanswer: " << agent.to_string_solution() << "\n";
+	agent = GA(graph);
+	tuple<int, string> sol = agent.execute(due);
+	output << agent.to_string_solution() << "\n";
+
+	/*// 50 노드 테스트
+	input50 >> v >> e; // 그래프 정보 입력
+
+	graph = Graph(v); // 그래프 생성
+
+	// 그래프 노드 입력
+	for (int i = 0; i < e; i++) {
+		input50 >> from >> to >> w;
+		graph.add_undir(Edge{ from, to, w });
+	}
+
+	// unweighted_50.txt 테스트
+	cout << "\nres/unweighted_50.txt 테스트\n";
+	output50 << ",cost,solution\n";
+	for (int i = 1; i <= iter; i++) {
+		cout << "test # " << i << "\n";
+		agent = GA(graph);
+		tuple<int, string> sol = agent.execute(due);
+		cout << "solution cost: " << get<0>(sol) << "\n\n";
+		output50 << i << "," << get<0>(sol) << "," << agent.to_string_solution() << "\n";
+	}*/
+
+	/*// 100 노드 테스트
+	input100 >> v >> e; // 그래프 정보 입력
+
+	graph = Graph(v); // 그래프 생성
+
+	// 그래프 노드 입력
+	for (int i = 0; i < e; i++) {
+		input100 >> from >> to >> w;
+		graph.add_undir(Edge{ from, to, w });
+	}
+
+	// unweighted_100.txt 테스트
+	cout << "\nres/unweighted_100.txt 테스트\n";
+	output100 << ",cost,solution\n";
+	for (int i = 1; i <= iter; i++) {
+		cout << "test # " << i << "\n";
+		agent = GA(graph);
+		tuple<int, string> sol = agent.execute(due);
+		cout << "solution cost: " << get<0>(sol) << "\n\n";
+		output100 << i << "," << get<0>(sol) << "," << agent.to_string_solution() << "\n";
+	}*/
+
+	/*// 500 노드 테스트
+	input500 >> v >> e; // 그래프 정보 입력
+
+	graph = Graph(v); // 그래프 생성
+
+	// 그래프 노드 입력
+	for (int i = 0; i < e; i++) {
+		input500 >> from >> to >> w;
+		graph.add_undir(Edge{ from, to, w });
+	}
+
+	// weighted_500.txt 테스트
+	cout << "\nres/unweighted_100.txt 테스트\n";
+	output500 << ",cost,solution\n";
+	for (int i = 1; i <= iter; i++) {
+		cout << "test # " << i << "\n";
+		agent = GA(graph);
+		tuple<int, string> sol = agent.execute(due);
+		cout << "solution cost: " << get<0>(sol) << "\n\n";
+		output500 << i << "," << get<0>(sol) << "," << agent.to_string_solution() << "\n";
+	}*/
 
 	// 종료 시간 측정
-	clock_finish = clock();
+	//clock_finish = clock();
 
-	clock_duration = (double)(clock_finish - clock_start) / CLOCKS_PER_SEC; // 초 단위로 환산
+	//clock_duration = (double)(clock_finish - clock_start) / CLOCKS_PER_SEC / 60; // 분 단위로 환산
 	// clock_duration = (double)(clock_finish - clock_start); // ms 단위로 계산
-	cout << "\n프로그램 실행 시간 : " << clock_duration << "s\n";
+	//cout << "\n프로그램 실행 시간 : " << clock_duration << "min\n";
 
 	return 0;
 }
@@ -197,28 +268,6 @@ string currentDateTime() {
 	else {
 		return "현재 시간을 얻을 수 없음";
 	}
-}
-
-// 오류 코드와 메시지 출력 후 프로그램 종료
-void error(_error code, string message) {
-	if (!message.empty())
-		cout << "error: " << message << "\n";
-
-	switch (code) {
-	case _error::shut_down:
-		cout << "프로그램 비정상 종료\n";
-		break;
-	case _error::ValueErrorInt: // 잘못된 입력 - int
-		cout << "ValueErrorInt: int 값이 입력되어야 합니다.\n";
-		break;
-	case _error::ValueErrorChar: // 잘못된 입력 - char
-		cout << "ValueErrorChar: char 값이 입력되어야 합니다.\n";
-		break;
-	default:
-		cout << "UnknownError: 알 수 없는 오류\n";
-	}
-
-	exit(1); // 프로그램 비정상 종료
 }
 
 // 특정 정점에 연결된 간선들만 반환
@@ -240,8 +289,6 @@ vector<Edge> Graph::edges_from(unsigned i) const {
 void Graph::add(Edge&& e) {
 	if (e.from > 0 && e.from <= this->v && e.to > 0 && e.to <= this->v)
 		this->edges.push_back(e);
-	else
-		error(_error::shut_down, "정점 범위 초과");
 
 	return;
 }
@@ -252,8 +299,6 @@ void Graph::add_undir(Edge&& e) {
 		this->edges.push_back(e);
 		this->edges.push_back(Edge{e.to, e.from, e.w});
 	}
-	else
-		error(_error::shut_down, "정점 범위 초과");
 
 	return;
 }
@@ -517,7 +562,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		}
 		else
 			i--;
-		if (is_timeout(due, false)) {
+		if (is_timeout(due)) {
 			return get_current_best();
 		}
 	}

@@ -38,6 +38,18 @@
     <None Include="res\un50test.csv">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="maxcut.in">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="maxcut.out">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\un100test.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\w500test.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="20191130 basic GA.cpp">

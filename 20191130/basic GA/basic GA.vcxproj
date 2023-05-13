@@ -136,7 +136,11 @@
     <Text Include="res\weighted_500.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="maxcut.in" />
+    <None Include="maxcut.out" />
+    <None Include="res\un100test.csv" />
     <None Include="res\un50test.csv" />
+    <None Include="res\w500test.csv" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="20191130 basic GA.cpp" />
