@@ -1,4 +1,4 @@
-un50test result
+unweighted 50
             cost
 count  30.000000
 mean   96.300000
@@ -9,7 +9,7 @@ min    90.000000
 75%    98.000000
 max    99.000000
 
-un100test result
+unweighted 100
              cost
 count   30.000000
 mean   346.300000
@@ -20,7 +20,7 @@ min    333.000000
 75%    348.750000
 max    357.000000
 
-w500test result
+weighted 500
               cost
 count    30.000000
 mean   3396.466667
