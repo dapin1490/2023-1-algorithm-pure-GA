@@ -234,7 +234,7 @@ int main()
 	}
 
 	// weighted_500.txt 테스트
-	cout << "\nres/unweighted_100.txt 테스트\n";
+	cout << "\nres/weighted_500.txt 테스트\n";
 	output500 << ",cost,solution\n";
 	for (int i = 1; i <= iter; i++) {
 		cout << "test # " << i << "\n";

@@ -1,2 +1,278 @@
-main.cpp 실행 시각 : 2023-05-13 22:39:23
+main.cpp 실행 시각 : 2023-05-14 00:28:15
+
+
+res/unweighted_50.txt 테스트
+test # 1
+solution cost: 93
+
+test # 2
+solution cost: 98
+
+test # 3
+solution cost: 99
+
+test # 4
+solution cost: 98
+
+test # 5
+solution cost: 93
+
+test # 6
+solution cost: 91
+
+test # 7
+solution cost: 92
+
+test # 8
+solution cost: 98
+
+test # 9
+solution cost: 95
+
+test # 10
+solution cost: 98
+
+test # 11
+solution cost: 95
+
+test # 12
+solution cost: 97
+
+test # 13
+solution cost: 98
+
+test # 14
+solution cost: 99
+
+test # 15
+solution cost: 97
+
+test # 16
+solution cost: 98
+
+test # 17
+solution cost: 98
+
+test # 18
+solution cost: 98
+
+test # 19
+solution cost: 97
+
+test # 20
+solution cost: 98
+
+test # 21
+solution cost: 97
+
+test # 22
+solution cost: 95
+
+test # 23
+solution cost: 95
+
+test # 24
+solution cost: 93
+
+test # 25
+solution cost: 93
+
+test # 26
+solution cost: 96
+
+test # 27
+solution cost: 93
+
+test # 28
+solution cost: 98
+
+test # 29
+solution cost: 96
+
+test # 30
+solution cost: 96
+
+
+res/unweighted_100.txt 테스트
+test # 1
+solution cost: 350
+
+test # 2
+solution cost: 349
+
+test # 3
+solution cost: 340
+
+test # 4
+solution cost: 351
+
+test # 5
+solution cost: 341
+
+test # 6
+solution cost: 345
+
+test # 7
+solution cost: 346
+
+test # 8
+solution cost: 345
+
+test # 9
+solution cost: 352
+
+test # 10
+solution cost: 345
+
+test # 11
+solution cost: 346
+
+test # 12
+solution cost: 342
+
+test # 13
+solution cost: 343
+
+test # 14
+solution cost: 345
+
+test # 15
+solution cost: 347
+
+test # 16
+solution cost: 342
+
+test # 17
+solution cost: 344
+
+test # 18
+solution cost: 342
+
+test # 19
+solution cost: 354
+
+test # 20
+solution cost: 344
+
+test # 21
+solution cost: 355
+
+test # 22
+solution cost: 344
+
+test # 23
+solution cost: 341
+
+test # 24
+solution cost: 350
+
+test # 25
+solution cost: 341
+
+test # 26
+solution cost: 345
+
+test # 27
+solution cost: 343
+
+test # 28
+solution cost: 346
+
+test # 29
+solution cost: 347
+
+test # 30
+solution cost: 341
+
+
+res/weighted_500.txt 테스트
+test # 1
+solution cost: 3411
+
+test # 2
+solution cost: 3385
+
+test # 3
+solution cost: 3403
+
+test # 4
+solution cost: 3372
+
+test # 5
+solution cost: 3389
+
+test # 6
+solution cost: 3381
+
+test # 7
+solution cost: 3369
+
+test # 8
+solution cost: 3431
+
+test # 9
+solution cost: 3362
+
+test # 10
+solution cost: 3378
+
+test # 11
+solution cost: 3403
+
+test # 12
+solution cost: 3420
+
+test # 13
+solution cost: 3422
+
+test # 14
+solution cost: 3383
+
+test # 15
+solution cost: 3371
+
+test # 16
+solution cost: 3400
+
+test # 17
+solution cost: 3390
+
+test # 18
+solution cost: 3403
+
+test # 19
+solution cost: 3383
+
+test # 20
+solution cost: 3456
+
+test # 21
+solution cost: 3390
+
+test # 22
+solution cost: 3377
+
+test # 23
+solution cost: 3386
+
+test # 24
+solution cost: 3398
+
+test # 25
+solution cost: 3408
+
+test # 26
+solution cost: 3401
+
+test # 27
+solution cost: 3405
+
+test # 28
+solution cost: 3401
+
+test # 29
+solution cost: 3394
+
+test # 30
+solution cost: 3429
 

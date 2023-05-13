@@ -11,6 +11,8 @@ def bar_caption(_bar: BarContainer) -> BarContainer:
 
 def save_stat(data_route: str, file, fig_route, title: str, fgsize: tuple=(12, 8)):
     data = pd.read_csv(data_route, header=0, index_col=0, encoding='utf-8')
+    data.sort_values(by='cost', inplace=True)
+    data.reset_index(inplace=True, drop=True)
 
     file.write(f"{title}\n")
     file.write(f"{str(data.describe())}\n\n")
@@ -19,6 +21,9 @@ def save_stat(data_route: str, file, fig_route, title: str, fgsize: tuple=(12, 8
     plt.grid(alpha=0.3)
     bar = plt.bar(data.index, data['cost'], align='center', alpha=0.8)
     bar = bar_caption(bar)
+
+    plt.plot(data.index, [data['cost'].mean()]*len(data.index), 'm--', alpha=0.5)
+    plt.legend([f'mean: {data["cost"].mean():.2f}'], loc='upper left')
 
     plt.title(title)
     plt.ylim(data['cost'].min() // 10 * 10 - 10, data['cost'].max() // 10 * 10 + 10)
