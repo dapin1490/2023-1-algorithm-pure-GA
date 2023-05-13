@@ -506,7 +506,7 @@ string GA::mutation(string chromosome) {
 
 // 세대 교체
 bool GA::replacement(string chromosome, int cost) {
-	uniform_int_distribution<int> gen_cost(0, thresh + 3); // 자식과 교체 대상의 cost 차이 생성
+	uniform_int_distribution<int> gen_cost(1, thresh + 3); // 자식과 교체 대상의 cost 차이 생성
 	int r_cost; // 교체 대상의 cost
 	int break_count = 0;
 	int s; // 교체 대상 해의 수
