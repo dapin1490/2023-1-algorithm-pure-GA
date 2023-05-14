@@ -413,7 +413,7 @@ tuple<string, int, string, int> GA::selection() {
 
 	* 예외 교배 판정 실행: 낮은 확률로 cost 차이가 큰 부모가 생성될 수 있음
 	* 예외 교배 판정에 따라 정해진 cost 범위 내에서 male의 cost 뽑기: 뽑힌 cost에 해당하는 해가 최소 1개 존재해야 함
-		* 예외: 아무리 뽑아도 해당하는 해가 없다면 female을 male parent로 사용해 자가복제
+		* 예외: 아무리 뽑아도 해당하는 해가 없다면 female과 cost가 같은 해 중 다시 하나를 뽑아 동성교배
 	* 뽑힌 cost에 해당하는 해 랜덤으로 뽑기 -> male parent
 	*/
 	tuple<string, int, string, int> parents; // 선택된 부모: female 먼저 선택 후 male 선택
@@ -451,7 +451,7 @@ tuple<string, int, string, int> GA::selection() {
 	get<1>(parents) = candidates[0]; // 뽑힌 female의 가중치
 
 	if (special_love(this->gen) > 5) { // 예외 교배 발생 판정: 발생하지 않으면 female의 cost보다 나은 male만을 선택하게 함
-		pick_cost = uniform_int_distribution<int>(candidates[0], candidates[0] + thresh);
+		pick_cost = uniform_int_distribution<int>(candidates[0] + 1, candidates[0] + thresh);
 	}
 
 	// male 선택
@@ -460,7 +460,7 @@ tuple<string, int, string, int> GA::selection() {
 		if (pool.find(cb) != pool.end() && pool[cb][1].size() != 0) // 해 존재 확인
 			break;
 		if (break_count > thresh * 2) { // 아무리 뽑아도 해가 없으면
-			break_flag = true; // 자가 복제 flag true
+			break_flag = true; // 동성 교배 flag true
 			break;
 		}
 		break_count++;
@@ -470,9 +470,9 @@ tuple<string, int, string, int> GA::selection() {
 		get<2>(parents) = pool[cb][1][uniform_int_distribution<int>(0, len - 1)(this->gen)];
 		get<3>(parents) = cb;
 	}
-	else { // male이 없어서 자가 복제
-		get<2>(parents) = get<0>(parents);
-		get<3>(parents) = get<1>(parents);
+	else { // male이 없어서 동성 교배
+		get<2>(parents) = pool[candidates[0]][0][uniform_int_distribution<int>(0, len - 1)(this->gen)]; // 뽑기
+		get<3>(parents) = candidates[0]; // 뽑힌 female의 가중치
 	}
 
 	return parents;
@@ -517,6 +517,14 @@ bool GA::replacement(string chromosome, int cost, int gender) {
 	int break_count = 0;
 	int s; // 교체 대상 해의 수
 
+	if (cost > get<0>(get_current_best())) { // 예외: 신기록 경신하면 바로 pool에 추가
+		if (pool.find(cost) == pool.end()) { // 추가할 자식의 cost가 pool에 없으면 추가
+			pool.insert({ cost, vector<vector<string>>(2) });
+		}
+		pool[cost][gender].push_back(chromosome); // 자식 추가
+		return true;
+	}
+
 	while (true) { // 교체 대상의 cost 뽑기: 유효한 cost가 나오거나 포기할 때까지 반복
 		r_cost = max(cost - gen_cost(this->gen), 0);
 		if ((pool.find(r_cost) != pool.end() && pool[r_cost][gender].size() != 0) || break_count > 20)
@@ -548,7 +556,6 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 	* 세대 교체
 	* 일정 조건 후 종료
 	*/
-	string res = ""; // 마지막에 반환할 결과
 	int n_pool = min(1000, int(50 * this->graph.size())); // 초기 생성 pool 크기
 	int k = int(double(n_pool) * 0.1); // 한 세대 수
 	uniform_int_distribution<int> gender(0, 1); // 성별 랜덤 지정
@@ -572,7 +579,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 			else
 				j--;
 		}
-		if (is_timeout(due, false)) {
+		if (is_timeout(due)) {
 			return get_current_best();
 		}
 	}
@@ -582,7 +589,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		return get_current_best();
 	}
 
-	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.1), 2)); // 부모 쌍 cost 차이 제한
+	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.1), 5)); // 부모 쌍 cost 차이 제한
 
 	// 부모 선택, 교배, 세대 교체
 	while (true) { // 조건을 만족할 때까지 진화, 제한 시간 임박하면 종료
