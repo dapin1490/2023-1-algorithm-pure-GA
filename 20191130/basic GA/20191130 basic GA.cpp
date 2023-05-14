@@ -84,6 +84,9 @@ private:
 	// 세대 교체
 	bool replacement(string chromosome, int cost);
 
+	// pool에 존재하는 모든 해의 cost 출력
+	void print_pool(int idx);
+
 public:
 	GA() {
 		graph = Graph();
@@ -131,28 +134,16 @@ int main()
 	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 	
 	// 코드 실행 시간 측정 : https://scarlettb.tistory.com/5
-	//clock_t clock_start, clock_finish;
-	//double clock_duration;
+	clock_t clock_start, clock_finish;
+	double clock_duration = 0;
 
-	cout << "main.cpp 실행 시각 : " << currentDateTime() << "\n\n";
+	//cout << "main.cpp 실행 시각 : " << currentDateTime() << "\n\n";
 
-	//clock_start = clock();
+	clock_start = clock();
 
 	// 제출용 입출력
 	ifstream input{ "maxcut.in" };
 	ofstream output{ "maxcut.out" };
-
-	/*// 노드 50개 테스트
-	ifstream input50{ "res/unweighted_50.txt" };
-	ofstream output50{ "res/un50test.csv" };*/
-
-	/*// 노드 100개 테스트
-	ifstream input100{ "res/unweighted_100.txt" };
-	ofstream output100{ "res/un100test.csv" };*/
-
-	/*// 노드 500개 테스트
-	ifstream input500{ "res/weighted_500.txt" };
-	ofstream output500{ "res/w500test.csv" };*/
 
 	// 프로그램 실행 시작
 	int v, e; // 정점 수 v, 간선 수 e
@@ -160,7 +151,7 @@ int main()
 	int w; // 가중치
 	Graph graph;
 	GA agent;
-	int due = 178, iter = 30; // 시간 제한, 반복 수
+	int due = 175; // 시간 제한(초)
 
 	// 제출용 실행 코드
 	input >> v >> e; // 그래프 정보 입력
@@ -178,78 +169,11 @@ int main()
 	tuple<int, string> sol = agent.execute(due);
 	output << agent.to_string_solution() << "\n";
 
-	/*// 50 노드 테스트
-	input50 >> v >> e; // 그래프 정보 입력
-
-	graph = Graph(v); // 그래프 생성
-
-	// 그래프 노드 입력
-	for (int i = 0; i < e; i++) {
-		input50 >> from >> to >> w;
-		graph.add_undir(Edge{ from, to, w });
-	}
-
-	// unweighted_50.txt 테스트
-	cout << "\nres/unweighted_50.txt 테스트\n";
-	output50 << ",cost,solution\n";
-	for (int i = 1; i <= iter; i++) {
-		cout << "test # " << i << "\n";
-		agent = GA(graph);
-		tuple<int, string> sol = agent.execute(due);
-		cout << "solution cost: " << get<0>(sol) << "\n\n";
-		output50 << i << "," << get<0>(sol) << "," << agent.to_string_solution() << "\n";
-	}*/
-
-	/*// 100 노드 테스트
-	input100 >> v >> e; // 그래프 정보 입력
-
-	graph = Graph(v); // 그래프 생성
-
-	// 그래프 노드 입력
-	for (int i = 0; i < e; i++) {
-		input100 >> from >> to >> w;
-		graph.add_undir(Edge{ from, to, w });
-	}
-
-	// unweighted_100.txt 테스트
-	cout << "\nres/unweighted_100.txt 테스트\n";
-	output100 << ",cost,solution\n";
-	for (int i = 1; i <= iter; i++) {
-		cout << "test # " << i << "\n";
-		agent = GA(graph);
-		tuple<int, string> sol = agent.execute(due);
-		cout << "solution cost: " << get<0>(sol) << "\n\n";
-		output100 << i << "," << get<0>(sol) << "," << agent.to_string_solution() << "\n";
-	}*/
-
-	/*// 500 노드 테스트
-	input500 >> v >> e; // 그래프 정보 입력
-
-	graph = Graph(v); // 그래프 생성
-
-	// 그래프 노드 입력
-	for (int i = 0; i < e; i++) {
-		input500 >> from >> to >> w;
-		graph.add_undir(Edge{ from, to, w });
-	}
-
-	// weighted_500.txt 테스트
-	cout << "\nres/weighted_500.txt 테스트\n";
-	output500 << ",cost,solution\n";
-	for (int i = 1; i <= iter; i++) {
-		cout << "test # " << i << "\n";
-		agent = GA(graph);
-		tuple<int, string> sol = agent.execute(due);
-		cout << "solution cost: " << get<0>(sol) << "\n\n";
-		output500 << i << "," << get<0>(sol) << "," << agent.to_string_solution() << "\n";
-	}*/
-
 	// 종료 시간 측정
-	//clock_finish = clock();
+	clock_finish = clock();
 
-	//clock_duration = (double)(clock_finish - clock_start) / CLOCKS_PER_SEC / 60; // 분 단위로 환산
-	// clock_duration = (double)(clock_finish - clock_start); // ms 단위로 계산
-	//cout << "\n프로그램 실행 시간 : " << clock_duration << "min\n";
+	clock_duration += (double)(clock_finish - clock_start) / CLOCKS_PER_SEC; // 초 단위로 환산
+	//cout << "\n프로그램 실행 시간 : " << clock_duration << "s\n";
 
 	return 0;
 }
@@ -532,6 +456,25 @@ bool GA::replacement(string chromosome, int cost) {
 	return true; // 교체 성공
 }
 
+// pool에 존재하는 모든 해의 cost 출력
+void GA::print_pool(int idx) {
+	map<int, vector<string>>::iterator iter; // map iterator: https://dar0m.tistory.com/98
+
+	cout << idx << ",";
+
+	for (iter = pool.begin(); iter != pool.end(); iter++) {
+		// iter,pool
+		// ex: 1,90*1 91*1 92*2 93*1 95*1
+		if (iter->second.size() < 1) {
+			continue;
+		}
+		cout << iter->first << "*" << iter->second.size() << " ";
+	}
+
+	cout << "\n";
+	return;
+}
+
 // 유전 알고리즘 실행
 tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시간
 	/*
@@ -547,6 +490,8 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 	uniform_int_distribution<int> plz_add_me(1, 100); // 대체 대상이 없는 자식이 pool에 추가될 확률 2%
 	bool is_child_added = false; // 자식이 pool에 추가되었는지
 	int cut_count = 0; // 대체 실패한 자식 수
+
+	//int idx = 1; // 세대 수
 
 	// 랜덤 해 생성
 	// cout << "generate\n";
@@ -565,6 +510,8 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 			return get_current_best();
 		}
 	}
+
+	//print_pool(idx++);
 
 	// cout << "generate complete\n";
 	if (is_timeout(due)) {
@@ -619,13 +566,16 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 			if (!is_child_added)
 				cut_count++;
 		}
+
+		//print_pool(idx++);
+
 		// 시간 제한 확인
 		// cout << "children replace complete\n";
 		if (is_timeout(due)) {
 			return get_current_best();
 		}
 
-		if (cut_count > int(double(k) * 0.7)) { // 생성된 자식의 70% 이상이 대체되지 못했다면 진화 수렴 판단
+		if (cut_count > int(double(k) * 0.5)) { // 생성된 자식의 70% 이상이 대체되지 못했다면 진화 수렴 판단
 			// cout << "evolution complete\n";
 			break;
 		}
