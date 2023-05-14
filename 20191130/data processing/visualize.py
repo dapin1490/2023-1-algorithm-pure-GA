@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.container import BarContainer
-import io
 
 def bar_caption(_bar: BarContainer) -> BarContainer:
     for rect in _bar:
@@ -25,7 +24,7 @@ def save_stat(data_route: str, file, fig_route, title: str, fgsize: tuple=(12, 8
     plt.plot(data.index, [data['cost'].mean()]*len(data.index), 'm--', alpha=0.5)
     plt.legend([f'mean: {data["cost"].mean():.2f}'], loc='upper left')
 
-    plt.title(title)
+    plt.title(f"{title}(std: {data['cost'].std():.2f})")
     plt.ylim(data['cost'].min() // 10 * 10 - 10, data['cost'].max() // 10 * 10 + 10)
     plt.yticks(rotation=0)
 

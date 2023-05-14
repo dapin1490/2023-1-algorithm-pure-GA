@@ -542,7 +542,6 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 	* 세대 교체
 	* 일정 조건 후 종료
 	*/
-	string res = ""; // 마지막에 반환할 결과
 	int n_pool = min(1000, int(50 * this->graph.size())); // 초기 생성 pool 크기
 	int k = int(double(n_pool) * 0.1); // 한 세대 수
 	uniform_int_distribution<int> plz_add_me(1, 100); // 대체 대상이 없는 자식이 pool에 추가될 확률 2%
@@ -572,7 +571,8 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		return get_current_best();
 	}
 
-	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.1), 2)); // 자식 교체 대상 cost 차이 제한
+	// 자식 교체 대상 cost 차이 제한
+	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.2), 5));
 
 	// 부모 선택, 교배, 세대 교체
 	while (true) { // 조건을 만족할 때까지 진화, 제한 시간 임박하면 종료
@@ -616,7 +616,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 				pool[get<0>(child)].push_back(get<1>(child));
 				is_child_added = true;
 			}
-			else if (!is_child_added)
+			if (!is_child_added)
 				cut_count++;
 		}
 		// 시간 제한 확인
@@ -625,7 +625,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 			return get_current_best();
 		}
 
-		if (cut_count > int(double(k) * 0.5)) { // 생성된 자식의 50% 이상이 대체되지 못했다면 진화 수렴 판단
+		if (cut_count > int(double(k) * 0.7)) { // 생성된 자식의 70% 이상이 대체되지 못했다면 진화 수렴 판단
 			// cout << "evolution complete\n";
 			break;
 		}
