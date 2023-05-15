@@ -37,25 +37,25 @@ def save_stat(data_route: str, file: TextIOWrapper, fig_route: str, title: str, 
     plt.savefig(fig_route)  # 그래프 저장
     return
 
-res = open(r'20191130/data processing/GA test/test-result.txt', 'w', encoding='utf-8')
+res = open(r'20191130/data processing/basic GA/test-result.txt', 'w', encoding='utf-8')
 print(type(res))
 
 # 노드 50개 테스트 결과
 save_stat(data_route=r"20191130/basic GA/res/un50test.csv",
           file=res,
-          fig_route=r'20191130/data processing/GA test/un50test-graph.jpg',
+          fig_route=r'20191130/data processing/basic GA/images/un50test-graph.jpg',
           title="unweighted 50")
 
 # 노드 100개 테스트 결과
 save_stat(data_route=r"20191130/basic GA/res/un100test.csv",
           file=res,
-          fig_route=r'20191130/data processing/GA test/un100test-graph.jpg',
+          fig_route=r'20191130/data processing/basic GA/images/un100test-graph.jpg',
           title="unweighted 100")
 
 # 노드 500개 테스트 결과
 save_stat(data_route=r"20191130/basic GA/res/w500test.csv",
           file=res,
-          fig_route=r'20191130/data processing/GA test/w500test-graph.jpg',
+          fig_route=r'20191130/data processing/basic GA/images/w500test-graph.jpg',
           title="weighted 500")
 
 res.close()

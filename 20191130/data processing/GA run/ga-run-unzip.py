@@ -42,16 +42,16 @@ def unzip_pool(where_to_save: str, data_route: str):
     return
 
 # 50 노드 세대별 cost 통계
-save_to = r'20191130/data processing/GA run/un50describe.csv'
-read_from = r'20191130/data processing/GA run/un50pool.csv'
+save_to = r'20191130\data processing\basic GA\un50describe.csv'
+read_from = r'20191130\data processing\basic GA\un50pool.csv'
 unzip_pool(save_to, read_from)
 
 # 100 노드 세대별 cost 통계
-save_to = r'20191130/data processing/GA run/un100describe.csv'
-read_from = r'20191130/data processing/GA run/un100pool.csv'
+save_to = r'20191130\data processing\basic GA\un100describe.csv'
+read_from = r'20191130\data processing\basic GA\un100pool.csv'
 unzip_pool(save_to, read_from)
 
 # 500 노드 세대별 cost 통계
-save_to = r'20191130/data processing/GA run/w500describe.csv'
-read_from = r'20191130/data processing/GA run/w500pool.csv'
+save_to = r'20191130\data processing\basic GA\w500describe.csv'
+read_from = r'20191130\data processing\basic GA\w500pool.csv'
 unzip_pool(save_to, read_from)
