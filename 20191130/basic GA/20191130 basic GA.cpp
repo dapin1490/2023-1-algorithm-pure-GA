@@ -67,10 +67,7 @@ private:
 	// 시간 초과 확인
 	bool is_timeout(int deadline, bool is_print = false);
 	// 현재 pool에서 가장 좋은 해 반환
-	tuple<int, string> get_current_best() {
-		this->sol = make_tuple((--pool.end())->first, (--pool.end())->second[0]);
-		return sol;
-	}
+	tuple<int, string> get_current_best();
 	// 해 유효성 확인 및 cost 계산
 	int validate(string chromosome);
 	// 해 생성
@@ -134,12 +131,12 @@ int main()
 	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 	
 	// 코드 실행 시간 측정 : https://scarlettb.tistory.com/5
-	clock_t clock_start, clock_finish;
-	double clock_duration = 0;
+	//clock_t clock_start, clock_finish;
+	//double clock_duration = 0;
 
 	//cout << "main.cpp 실행 시각 : " << currentDateTime() << "\n\n";
 
-	clock_start = clock();
+	//clock_start = clock();
 
 	// 제출용 입출력
 	ifstream input{ "maxcut.in" };
@@ -170,9 +167,9 @@ int main()
 	output << agent.to_string_solution() << "\n";
 
 	// 종료 시간 측정
-	clock_finish = clock();
+	//clock_finish = clock();
 
-	clock_duration += (double)(clock_finish - clock_start) / CLOCKS_PER_SEC; // 초 단위로 환산
+	//clock_duration += (double)(clock_finish - clock_start) / CLOCKS_PER_SEC; // 초 단위로 환산
 	//cout << "\n프로그램 실행 시간 : " << clock_duration << "s\n";
 
 	return 0;
@@ -251,6 +248,17 @@ bool GA::is_timeout(int deadline, bool is_print) {
 		return true;
 	}
 	return false;
+}
+
+// 현재 pool에서 가장 좋은 해 반환
+tuple<int, string> GA::get_current_best() {
+	for (map<int, vector<string>>::iterator i = --pool.end(); (i != pool.begin() || i == pool.begin()); --i) {
+		if (i->second.size() > 0) {
+			this->sol = make_tuple(i->first, i->second[0]);
+			return make_tuple(i->first, i->second[0]);
+		}
+	}
+	return make_tuple(INT_MIN, "");
 }
 
 // 해 유효성 검사 및 가중치 계산
@@ -433,7 +441,7 @@ bool GA::replacement(string chromosome, int cost) {
 	uniform_int_distribution<int> gen_cost(1, thresh + 3); // 자식과 교체 대상의 cost 차이 생성
 	int r_cost; // 교체 대상의 cost
 	int break_count = 0;
-	int s; // 교체 대상 해의 수
+	int s; // 교체 가능 해의 수
 
 	while (true) { // 교체 대상의 cost 뽑기: 유효한 cost가 나오거나 포기할 때까지 반복
 		r_cost = max(cost - gen_cost(this->gen), 0);
@@ -575,7 +583,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 			return get_current_best();
 		}
 
-		if (cut_count > int(double(k) * 0.5)) { // 생성된 자식의 70% 이상이 대체되지 못했다면 진화 수렴 판단
+		if (cut_count > int(double(k) * 0.5)) { // 생성된 자식의 50% 이상이 대체되지 못했다면 진화 수렴 판단
 			// cout << "evolution complete\n";
 			break;
 		}
@@ -586,7 +594,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 }
 
 tuple<int, string> GA::get_solution() {
-	return sol;
+	return get_current_best();
 };
 
 string GA::to_string_solution() {
