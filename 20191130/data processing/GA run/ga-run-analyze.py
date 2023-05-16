@@ -10,7 +10,7 @@ for col in data.columns:
     plt.figure(figsize=(12, 8))  # 그래프 크기
     plt.grid(alpha=0.3)  # 그리드 투명도
 
-    plt.plot(data.index, data[col], marker='.', alpha=0.8)
+    plt.plot(data.index, data[col], alpha=0.8)
 
     plt.title(f"un100 {col}")  # 그래프 제목에 괄호 치고 분산 표기
     # plt.ylim(data[col].min() // 10 * 10 - 10, data[col].max() // 10 * 10 + 10)  # y 값 범위 제한
@@ -18,7 +18,7 @@ for col in data.columns:
     plt.xlabel('generation')
     plt.ylabel(col, rotation='horizontal')
 
-    plt.savefig(rf'20191130\data processing\basic GA\images\un100{col}.jpg')
+    plt.savefig(rf'20191130\data processing\basic GA\images\un100{col}.jpg', bbox_inches='tight')
     plt.clf()
 
 columns = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
@@ -26,7 +26,7 @@ columns = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
 # 전체 pool 변화 그리기
 x = data.index
 
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(20, 12))
 plt.grid(alpha=0.3)
 
 plt.plot(x, data['min'], alpha=0.8)
@@ -35,12 +35,10 @@ plt.plot(x, data['50%'], alpha=0.8)
 plt.plot(x, data['75%'], alpha=0.8)
 plt.plot(x, data['max'], alpha=0.8)
 
-plt.plot(x, data['mean'], marker='.', alpha=0.5)
+plt.title(f"basic GA unweighted 100 generational change", fontsize=20)
+plt.legend(['min', '25%', '50%', '75%', 'max'], loc='upper left', fontsize=15)
 
-plt.title(f"basic GA generational change")
-plt.legend(['min', '25%', '50%', '75%', 'max', 'mean'], loc='upper left')
+plt.xlabel('generation', fontsize=20)
+plt.ylabel('cost', fontsize=20)
 
-plt.xlabel('generation')
-plt.ylabel('cost', rotation='horizontal')
-
-plt.savefig(r'20191130\data processing\basic GA\images\basic-GA-generational-change.jpg')
+plt.savefig(r'20191130\data processing\basic GA\images\basic-GA-un100-generational-change.jpg', bbox_inches='tight')

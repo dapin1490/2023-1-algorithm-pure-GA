@@ -34,7 +34,7 @@ def save_stat(data_route: str, file: TextIOWrapper, fig_route: str, title: str, 
     plt.ylim(data['cost'].min() // 10 * 10 - 10, data['cost'].max() // 10 * 10 + 10)  # y 값 범위 제한
     plt.yticks(rotation=0)
 
-    plt.savefig(fig_route)  # 그래프 저장
+    plt.savefig(fig_route, bbox_inches='tight')  # 그래프 저장
     return
 
 res = open(r'20191130/data processing/basic GA/test-result.txt', 'w', encoding='utf-8')
