@@ -136,6 +136,9 @@
     <Text Include="res\weighted_500.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\data processing\basic GA\un100pool.csv" />
+    <None Include="..\data processing\basic GA\un50pool.csv" />
+    <None Include="..\data processing\basic GA\w500pool.csv" />
     <None Include="maxcut.in" />
     <None Include="maxcut.out" />
     <None Include="res\un100test.csv" />

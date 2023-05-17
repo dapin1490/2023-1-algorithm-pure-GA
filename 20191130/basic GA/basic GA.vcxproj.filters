@@ -50,6 +50,15 @@
     <None Include="res\w500test.csv">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="..\data processing\basic GA\un50pool.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="..\data processing\basic GA\un100pool.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="..\data processing\basic GA\w500pool.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="20191130 basic GA.cpp">
