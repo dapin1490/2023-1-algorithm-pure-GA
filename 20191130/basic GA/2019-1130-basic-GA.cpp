@@ -10,9 +10,6 @@
 #include <fstream>
 using namespace std;
 
-// 현재 시간 표기
-string currentDateTime();
-
 struct Edge {
 	unsigned from; // 시작점
 	unsigned to; // 종점
@@ -134,8 +131,6 @@ int main()
 	//clock_t clock_start, clock_finish;
 	//double clock_duration = 0;
 
-	//cout << "main.cpp 실행 시각 : " << currentDateTime() << "\n\n";
-
 	//clock_start = clock();
 
 	// 제출용 입출력
@@ -173,22 +168,6 @@ int main()
 	//cout << "\n프로그램 실행 시간 : " << clock_duration << "s\n";
 
 	return 0;
-}
-
-// 현재 시간 표기
-string currentDateTime() {
-	time_t t = time(nullptr);
-	tm now;
-	errno_t is_error = localtime_s(&now, &t);
-
-	if (is_error == 0) {
-		char buffer[256];
-		strftime(buffer, sizeof(buffer), "%Y-%m-%d %X", &now);
-		return buffer;
-	}
-	else {
-		return "현재 시간을 얻을 수 없음";
-	}
 }
 
 // 특정 정점에 연결된 간선들만 반환
@@ -426,10 +405,7 @@ string GA::mutation(string chromosome) {
 	uniform_int_distribution<int> is_mutate(1, 200 * this->graph.size()); // 돌연변이 발생 확률 조절
 	uniform_int_distribution<int> choose(0, 1); // 돌연변이 발생시 문자 재선택: 돌연변이가 발생해도 원본과 똑같을 수 있음
 	for (int i = 0; i < chromosome.length(); i++) {
-		switch (is_mutate(this->gen) <= 3) {
-		case false:
-			continue;
-		case true:
+		if (is_mutate(this->gen) <= 3) {
 			chromosome.replace(i, 1, (choose(this->gen) == 0 ? "A" : "B"));
 		}
 	}
