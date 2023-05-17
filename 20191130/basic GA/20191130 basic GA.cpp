@@ -564,13 +564,13 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		// cout << "replace\n";
 		for (auto& child : temp_pool) {
 			is_child_added = replacement(get<1>(child), get<0>(child));
-			if (!is_child_added && plz_add_me(this->gen) <= 2) {
+			/*if (!is_child_added && plz_add_me(this->gen) <= 2) {
 				if (pool.find(get<0>(child)) == pool.end()) {
 					pool.insert({ get<0>(child), vector<string>() });
 				}
 				pool[get<0>(child)].push_back(get<1>(child));
 				is_child_added = true;
-			}
+			}*/
 			if (!is_child_added)
 				cut_count++;
 		}
