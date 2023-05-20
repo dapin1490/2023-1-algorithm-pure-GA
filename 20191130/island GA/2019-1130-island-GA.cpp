@@ -59,6 +59,7 @@ class GA {
 	* 주어진 그래프를 두 부류로 나누고, 각 부류를 연결하는 간선의 합이 최대가 되게 하라.
 	*/
 private:
+	int idx0 = 1, idx1 = 1, idx2 = 1; // 대륙별 세대 인덱스
 	mt19937 gen; // 난수 생성기
 	clock_t start_timestamp; // 프로그램 시작 시간
 	Graph graph; // 문제 그래프
@@ -72,7 +73,7 @@ private:
 	// thresh 설정
 	void set_thresh(int thr) { thresh = thr; };
 	// 시간 초과 확인
-	bool is_timeout(int deadline, bool is_print = false);
+	bool is_timeout(int deadline, bool is_print);
 	// 현재 pool에서 가장 좋은 해 반환
 	tuple<int, string> get_current_best();
 	// flatten two continents into one continent
@@ -84,16 +85,18 @@ private:
 	// 부모 쌍 선택: 토너먼트 이용
 	tuple<string, int, string, int> selection(int contin);
 	// 교배
-	string crossover(string female, string male);
+	string crossover(string female, int fcost, string male, int mcost);
 	// 돌연변이
 	string mutation(string chromosome);
 	// 세대 교체
 	bool replacement(string chromosome, int cost, int contin);
 	// 지역 최적화
 	void local_opt(int deadline);
+	// 대륙별 진화
+	void evolution(int due, int contin, double cut_rate);
 
 	// pool에 존재하는 모든 해의 cost 출력
-	void print_pool(int idx);
+	void print_pool(int idx, int contin);
 
 public:
 	GA() {
@@ -169,7 +172,7 @@ int main()
 	int w; // 가중치
 	Graph graph;
 	GA agent;
-	int due = 175, iter = 30; // 시간 제한(초), 반복 수
+	int due = 175, iter = 1; // 시간 제한(초), 반복 수
 
 	/*// 제출용 실행 코드
 	input >> v >> e; // 그래프 정보 입력
@@ -234,10 +237,10 @@ int main()
 	graph.remember();
 
 	// unweighted_100.txt 테스트
-	cout << "\nres/unweighted_100.txt 테스트\n";
+	//cout << "\nres/unweighted_100.txt 테스트\n";
 	output100 << ",cost,solution\n";
 	for (int i = 1; i <= iter; i++) {
-		cout << "test # " << i << "\n";
+		//cout << "test # " << i << "\n";
 		agent = GA(graph);
 		tuple<int, string> sol = agent.execute(due);
 		cout << "solution cost: " << get<0>(sol) << "\n\n";
@@ -247,8 +250,8 @@ int main()
 	clock_finish = clock();
 
 	clock_duration += (double(clock_finish) - double(clock_start)) / CLOCKS_PER_SEC / 60; // 분 단위로 환산
-	cout << "un 100: " << (double(clock_finish) - double(clock_start)) / CLOCKS_PER_SEC / 60 << "min";
-	cout << "\n누적 실행 시간 : " << clock_duration << "min\n";
+	//cout << "un 100: " << (double(clock_finish) - double(clock_start)) / CLOCKS_PER_SEC / 60 << "min";
+	//cout << "\n누적 실행 시간 : " << clock_duration << "min\n";
 
 	/*// w 500 test
 	clock_start = clock();
@@ -336,7 +339,7 @@ void Graph::print() {
 }
 
 // 제한 시간 초과 확인
-bool GA::is_timeout(int deadline, bool is_print) {
+bool GA::is_timeout(int deadline, bool is_print = false) {
 	clock_t running_time = clock();
 	double time_len = (double(running_time) - double(start_timestamp)) / CLOCKS_PER_SEC;
 	if (is_print)
@@ -540,18 +543,21 @@ tuple<string, int, string, int> GA::selection(int contin) {
 }
 
 // 교배
-string GA::crossover(string female, string male) {
+string GA::crossover(string female, int fcost, string male, int mcost) {
 	string child = ""; // 생성될 자식
-	uniform_int_distribution<int> dis(0, 1); // 난수 생성 범위 지정
-	for (int i = 0; i < graph.size(); i++) { // 50% 확률로 부모 둘 중 한 쪽의 문자를 선택해 받음
-		switch (dis(this->gen)) {
-		case 0:
-			child.push_back(female.at(i));
-			break;
-		default:
-		case 1:
-			child.push_back(male.at(i));
-		}
+	uniform_int_distribution<int> dis(1, 10); // 난수 생성 범위 지정
+	string& upper = male; // cost가 높은 부모
+	string& lower = female; // cost가 낮은 부모
+	
+	if (fcost > mcost) // 상하관계 정리
+		upper = female, lower = male;
+	
+	// 60% 확률로 cost가 더 큰 쪽의 유전자를 받음
+	for (int i = 0; i < graph.size(); i++) {
+		if (dis(this->gen) <= 6)
+			child.push_back(upper.at(i));
+		else
+			child.push_back(lower.at(i));
 	}
 	return child;
 }
@@ -617,13 +623,15 @@ void GA::local_opt(int deadline) {
 	int cost_after = get<0>(sol);
 	vector<int> verts(graph.size());
 	bool improved = true;
+	random_device rd;
+	default_random_engine rng(rd());
 
 	for (int i = 0; i < graph.size(); i++)
 		verts[i] = i;
 
 	while (improved) {
 		improved = false;
-		shuffle(verts.begin(), verts.end(), this->gen); // 셔플 참고: https://www.delftstack.com/ko/howto/cpp/shuffle-vector-cpp/
+		shuffle(verts.begin(), verts.end(), rng); // 셔플 참고: https://www.delftstack.com/ko/howto/cpp/shuffle-vector-cpp/
 
 		if (is_timeout(deadline)) {
 			this->sol = make_tuple(cost_after, ans_after);
@@ -644,7 +652,7 @@ void GA::local_opt(int deadline) {
 				break;
 			}
 			cost_after = validate(ans_after);
-			if (cost_after > cost_before) {
+			if (cost_after >= cost_before) {
 				ans_before = ans_after;
 				cost_before = cost_after;
 				improved = true;
@@ -664,36 +672,112 @@ void GA::local_opt(int deadline) {
 	return;
 }
 
+// 대륙별 진화
+void GA::evolution(int due, int contin, double cut_rate = 0.3) {
+	/*
+	* 부모 선택
+	* 돌연변이
+	* 세대 교체
+	* 수렴 후 종료
+	*/
+	int n_pool = min(500, int(5 * this->graph.size())); // 초기 생성 pool 크기
+	int k = n_pool * 0.3; // 한 세대 수
+	uniform_int_distribution<int> plz_add_me(1, 100); // 대체 대상이 없는 자식이 pool에 추가될 확률 2%
+	bool is_child_added = false; // 자식이 pool에 추가되었는지
+	int cut_count = 0; // 대체 실패한 자식 수
+	int* idx = &idx0; // 세대 수
+
+	switch (contin) {
+	case 1: idx = &idx1; break;
+	case 2: idx = &idx2; break;
+	}
+
+	// 부모 선택, 교배, 세대 교체
+	while (true) { // 조건을 만족할 때까지 진화, 제한 시간 임박하면 종료
+		// 시간 제한 확인
+		if (is_timeout(due)) {
+			return;
+		}
+
+		// 임시 자식 풀 초기화
+		temp_pool.clear();
+
+		// 종료 조건 초기화
+		cut_count = 0;
+
+		// 자식 생성
+		// cout << "generate children\n";
+		for (int i = 0; i < k; i++) {
+			// 부모 선택
+			tuple<string, int, string, int> parent = selection(contin);
+			// 교배 및 유효성 확인
+			string child = crossover(get<0>(parent), get<1>(parent), get<2>(parent), get<3>(parent));
+			int child_cost = validate(child);
+			if (child_cost != INT_MIN) {
+				temp_pool.push_back(make_tuple(contin, child_cost, child));
+			}
+			// thresh 예외 추가 자식
+			if (abs(get<1>(parent) - get<3>(parent)) > thresh) {
+				child = crossover(get<0>(parent), get<1>(parent), get<2>(parent), get<3>(parent));
+				child_cost = validate(child);
+				if (child_cost != INT_MIN) {
+					temp_pool.push_back(make_tuple(contin, child_cost, child));
+				}
+			}
+		}
+		// 시간 제한 확인
+		// cout << "children generation complete\n";
+		if (is_timeout(due)) {
+			return;
+		}
+
+		// 세대 교체
+		// cout << "replace\n";
+		for (auto& child : temp_pool) {
+			is_child_added = replacement(get<2>(child), get<1>(child), get<0>(child));
+			if (!is_child_added && plz_add_me(this->gen) <= 2) {
+				if (pool.find(get<1>(child)) == pool.end()) {
+					pool.emplace(get<1>(child), vector<vector<string>>(3));
+				}
+				pool[get<1>(child)][get<0>(child)].push_back(get<2>(child));
+				is_child_added = true;
+			}
+			else if (!is_child_added)
+				cut_count++;
+		}
+
+		print_pool((*idx)++, contin);
+
+		// 시간 제한 확인
+		// cout << "children replace complete\n";
+		if (is_timeout(due)) {
+			return;
+		}
+
+		if (cut_count > int(double(k) * cut_rate)) { // 생성된 자식의 지정 비율 이상이 대체되지 못했다면 진화 수렴 판단
+			// cout << "evolution complete\n";
+			break;
+		}
+	}
+}
+
 // pool에 존재하는 모든 해의 cost 출력
-void GA::print_pool(int idx) {
+void GA::print_pool(int idx, int contin) {
 	map<int, vector<vector<string>>>::iterator iter; // map iterator: https://dar0m.tistory.com/98
 	string index = to_string(idx).append(",");
 	string cont_a = index, cont_b = index, cont_total = index;
 
+	cout << idx << "," << contin << ",";
+
 	for (iter = pool.begin(); iter != pool.end(); iter++) {
 		// iter,continent,pool
 		// ex: 1,3,90*1 91*1 92*2 93*1 95*1
-		if (iter->second[0].size() > 0) {
-			cont_a.append(to_string(iter->first));
-			cont_a.append("*");
-			cont_a.append(to_string(iter->second[0].size()));
-			cont_a.append(" ");
-		}
-		if (iter->second[1].size() > 0) {
-			cont_a.append(to_string(iter->first));
-			cont_a.append("*");
-			cont_a.append(to_string(iter->second[1].size()));
-			cont_a.append(" ");
-		}
-		if (iter->second[2].size() > 0) {
-			cont_a.append(to_string(iter->first));
-			cont_a.append("*");
-			cont_a.append(to_string(iter->second[2].size()));
-			cont_a.append(" ");
+		if (iter->second[contin].size() > 0) {
+			cout << iter->first << "*" << iter->second[contin].size() << " ";
 		}
 	}
+	cout << "\n";
 
-	cout << cont_a << "\n" << cont_b << "\n" << cont_total << "\n";
 	return;
 }
 
@@ -709,13 +793,11 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 	* 대륙 외 교배
 	* 2차 수렴 후 종료
 	*/
-	int n_pool = min(1500, int(50 * this->graph.size())); // 초기 생성 pool 크기
+	int n_pool = min(500, int(50 * this->graph.size())); // 초기 생성 pool 크기
 	int k = n_pool * 0.3; // 한 세대 수
 	uniform_int_distribution<int> plz_add_me(1, 100); // 대체 대상이 없는 자식이 pool에 추가될 확률 2%
 	bool is_child_added = false; // 자식이 pool에 추가되었는지
 	int cut_count = 0; // 대체 실패한 자식 수
-
-	//int idx = 1; // 세대 수
 
 	// 랜덤 해 생성
 	// cout << "generate\n";
@@ -736,7 +818,8 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 		}
 	}
 
-	//print_pool(idx++);
+	print_pool(idx0++, 0);
+	print_pool(idx1++, 1);
 
 	// cout << "generate complete\n";
 	if (is_timeout(due)) {
@@ -746,142 +829,28 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 	// 부모 쌍 cost 차이 제한
 	set_thresh(max(int(((--pool.end())->first - pool.begin()->first) * 0.1), 5));
 
-	// 1차 진화: 부모 선택, 교배, 세대 교체
-	while (true) { // 조건을 만족할 때까지 진화, 제한 시간 임박하면 종료
-		// 시간 제한 확인
-		if (is_timeout(due)) {
-			return get_current_best();
-		}
+	// 1차 진화: continentA
+	evolution(due, 0);
+	//local_opt(due); // 지역 최적화
 
-		// 임시 자식 풀 초기화
-		temp_pool.clear();
-
-		// 종료 조건 초기화
-		cut_count = 0;
-
-		// 자식 생성
-		// cout << "generate children\n";
-		for (int i = 0; i < 2 * k; i++) { // k % 2로 대륙 구분
-			// 부모 선택
-			tuple<string, int, string, int> parent = selection(k % 2);
-			// 교배 및 유효성 확인
-			string child = crossover(get<0>(parent), get<2>(parent));
-			int child_cost = validate(child);
-			if (child_cost != INT_MIN) {
-				temp_pool.push_back(make_tuple(k % 2, child_cost, child));
-			}
-			// thresh 예외 추가 자식
-			if (abs(get<1>(parent) - get<3>(parent)) > thresh) {
-				child = crossover(get<0>(parent), get<2>(parent));
-				child_cost = validate(child);
-				if (child_cost != INT_MIN) {
-					temp_pool.push_back(make_tuple(k % 2, child_cost, child));
-				}
-			}
-		}
-		// 시간 제한 확인
-		// cout << "children generation complete\n";
-		if (is_timeout(due)) {
-			return get_current_best();
-		}
-
-		// 세대 교체
-		// cout << "replace\n";
-		for (auto& child : temp_pool) {
-			is_child_added = replacement(get<2>(child), get<1>(child), get<0>(child));
-			if (!is_child_added && plz_add_me(this->gen) <= 2) {
-				if (pool.find(get<1>(child)) == pool.end()) {
-					pool.emplace(get<1>(child), vector<vector<string>>(3));
-				}
-				pool[get<1>(child)][get<0>(child)].push_back(get<2>(child));
-				is_child_added = true;
-			}
-			else if (!is_child_added)
-				cut_count++;
-		}
-
-		//print_pool(idx++);
-		
-		// 시간 제한 확인
-		// cout << "children replace complete\n";
-		if (is_timeout(due)) {
-			return get_current_best();
-		}
-
-		if (cut_count > int(double(2 * k) * 0.3)) { // 생성된 자식의 30% 이상이 대체되지 못했다면 진화 수렴 판단
-			// cout << "evolution complete\n";
-			break;
-		}
+	// 시간 제한 확인
+	if (is_timeout(due)) {
+		return get_current_best();
 	}
 
-	// 2차 진화
+	// 1차 진화: continentB
+	evolution(due, 1);
+	//local_opt(due); // 지역 최적화
+
+	// 시간 제한 확인
+	if (is_timeout(due)) {
+		return get_current_best();
+	}
+
+	// 2차 진화: continent total
 	flat_pool(); // 대륙 통일
+	evolution(due, 2, 0.5);
 	local_opt(due); // 지역 최적화
-	while (true) {
-		if (is_timeout(due)) {
-			return get_current_best();
-		}
-
-		// 임시 자식 풀 초기화
-		temp_pool.clear();
-
-		// 종료 조건 초기화
-		cut_count = 0;
-
-		// 자식 생성
-		// cout << "generate children\n";
-		for (int i = 0; i < 2 * k; i++) {
-			// 부모 선택
-			tuple<string, int, string, int> parent = selection(2);
-			// 교배 및 유효성 확인
-			string child = crossover(get<0>(parent), get<2>(parent));
-			int child_cost = validate(child);
-			if (child_cost != INT_MIN) {
-				temp_pool.push_back(make_tuple(2, child_cost, child));
-			}
-			// thresh 예외 추가 자식
-			if (abs(get<1>(parent) - get<3>(parent)) > thresh) {
-				child = crossover(get<0>(parent), get<2>(parent));
-				child_cost = validate(child);
-				if (child_cost != INT_MIN) {
-					temp_pool.push_back(make_tuple(2, child_cost, child));
-				}
-			}
-		}
-		// 시간 제한 확인
-		// cout << "children generation complete\n";
-		if (is_timeout(due)) {
-			return get_current_best();
-		}
-
-		// 세대 교체
-		// cout << "replace\n";
-		for (auto& child : temp_pool) {
-			is_child_added = replacement(get<2>(child), get<1>(child), get<0>(child));
-			if (!is_child_added && plz_add_me(this->gen) <= 2) {
-				if (pool.find(get<1>(child)) == pool.end()) {
-					pool.emplace(get<1>(child), vector<vector<string>>(3));
-				}
-				pool[get<1>(child)][get<0>(child)].push_back(get<2>(child));
-				is_child_added = true;
-			}
-			else if (!is_child_added)
-				cut_count++;
-		}
-
-		//print_pool(idx++);
-
-		// 시간 제한 확인
-		// cout << "children replace complete\n";
-		if (is_timeout(due)) {
-			return get_current_best();
-		}
-
-		if (cut_count > int(double(2 * k) * 0.5)) { // 생성된 자식의 50% 이상이 대체되지 못했다면 진화 수렴 판단
-			// cout << "evolution complete\n";
-			break;
-		}
-	}
 	
 	// 시간 제한 확인
 	// cout << "evolution complete\n";
@@ -891,6 +860,7 @@ tuple<int, string> GA::execute(int due) { // due: 프로그램 실행 마감시�
 
 	// 지역 최적화
 	local_opt(due);
+	print_pool(idx2++, 2);
 
 	// cout << "return solution\n";
 	return get_current_best();
