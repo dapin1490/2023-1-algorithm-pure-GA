@@ -24,6 +24,7 @@
     <ProjectGuid>{4bf5a9dd-c1b1-4f4d-a48c-462932377122}</ProjectGuid>
     <RootNamespace>genderGA</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>island GA</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -128,7 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="20191130 gender GA.cpp" />
+    <ClCompile Include="2019-1130-island-GA.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\in.txt" />
@@ -139,6 +140,7 @@
     <Text Include="res\weighted_500.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="maxcut.in" />
     <None Include="res\un50test.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

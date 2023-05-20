@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="20191130 gender GA.cpp">
+    <ClCompile Include="2019-1130-island-GA.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\un50test.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="maxcut.in">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
