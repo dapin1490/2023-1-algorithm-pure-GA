@@ -24,21 +24,37 @@ for col in data.columns:
 columns = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
 
 # 전체 pool 변화 그리기
-x = data.index
+def draw_gen_change(data_route: str, title: str, save_route: str):
+    data = pd.read_csv(data_route, header=0, index_col=0, encoding='utf-8')
+    x = data.index
 
-plt.figure(figsize=(20, 12))
-plt.grid(alpha=0.3)
+    plt.figure(figsize=(20, 12))
+    plt.grid(alpha=0.3)
 
-plt.plot(x, data['min'], alpha=0.8)
-plt.plot(x, data['25%'], alpha=0.8)
-plt.plot(x, data['50%'], alpha=0.8)
-plt.plot(x, data['75%'], alpha=0.8)
-plt.plot(x, data['max'], alpha=0.8)
+    plt.plot(x, data['min'], alpha=0.8)
+    plt.plot(x, data['25%'], alpha=0.8)
+    plt.plot(x, data['50%'], alpha=0.8)
+    plt.plot(x, data['75%'], alpha=0.8)
+    plt.plot(x, data['max'], alpha=0.8)
 
-plt.title(f"basic GA unweighted 100 generational change", fontsize=20)
-plt.legend(['min', '25%', '50%', '75%', 'max'], loc='upper left', fontsize=15)
+    plt.title(title, fontsize=20)
+    plt.legend(['min', '25%', '50%', '75%', 'max'], loc='upper left', fontsize=15)
 
-plt.xlabel('generation', fontsize=20)
-plt.ylabel('cost', fontsize=20)
+    plt.xlabel('generation', fontsize=20)
+    plt.ylabel('cost', fontsize=20)
 
-plt.savefig(r'20191130\data processing\basic GA\images\basic-GA-un100-generational-change.jpg', bbox_inches='tight')
+    plt.savefig(save_route, bbox_inches='tight')
+    print(f"saved {title}")
+    return
+
+draw_gen_change(data_route=r'20191130\data processing\basic GA\un50describe.csv',
+                title=f"basic GA unweighted 50 generational change",
+                save_route=r'20191130\data processing\basic GA\images\basic-GA-un50-generational-change.jpg')
+
+draw_gen_change(data_route=r'20191130\data processing\basic GA\un100describe.csv',
+                title=f"basic GA unweighted 100 generational change",
+                save_route=r'20191130\data processing\basic GA\images\basic-GA-un100-generational-change.jpg')
+
+draw_gen_change(data_route=r'20191130\data processing\basic GA\w500describe.csv',
+                title=f"basic GA weighted 500 generational change",
+                save_route=r'20191130\data processing\basic GA\images\basic-GA-w500-generational-change.jpg')
