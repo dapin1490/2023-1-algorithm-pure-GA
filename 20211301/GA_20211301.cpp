@@ -157,6 +157,7 @@ string Crossover(const string& gene1, const string& gene2) {
     mt19937 gen(rd());
     uniform_real_distribution<> dis(0.0, 1.0);
     string child;
+    int count = 1;
 
     for (size_t i = 0; i < gene1.length(); ++i) {
         // 가중치가 더 높은 유전자의 60%를 그대로 가져오기
@@ -166,6 +167,21 @@ string Crossover(const string& gene1, const string& gene2) {
         else {
             // 나머지 40%는 다른 유전자에서 가져오기
             child += gene2[i];
+        }
+        // 돌연변이 생성하기
+        if (dis(gen) <= (0.0005 * count)) {
+            // 랜덤한 자리 지정
+            if (child[i] == '0') {
+                child[i] = '1';
+            }
+            else {
+                child[i] = '0';
+            }
+        }
+
+        // 노드 개수가 10을 넘을 때마다 count 증가
+        if ((i + 1) % 10 == 0) {
+            count++;
         }
     }return child;
     
@@ -237,8 +253,8 @@ int main() {
     vector<Edge> graph = readGraphFromFile(inputFilename);
     genParentPool(graph);  //초기 부모풀 생성
 
-    //제한 시간 180초
-    int seconds = 180;
+    //제한 시간 설정
+    int seconds = 10;
     chrono::time_point<chrono::system_clock> startTime = chrono::system_clock::now();
     parentPool = parentPool;
     childPool = childPool;
